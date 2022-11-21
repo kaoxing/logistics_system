@@ -16,7 +16,7 @@ def user_exist(id, pwd):
 
 def poster_exist(id, pwd):
     pass
-
+    pass
 
 def manager_exist(id, pwd):
     pass
