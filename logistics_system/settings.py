@@ -85,7 +85,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgres',  # 数据库名
         'USER': 'dboper',  # 用户名
-        'PASSWORD': 'dboper@123',  # 密码
+        'PASSWORD': 'dboper@246',  # 密码
         'HOST': '124.70.98.99',  # ip
         'PORT': 26000  # openGauss数据口的端口
     }
