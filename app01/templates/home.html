@@ -19,43 +19,33 @@
     <h1>商城购物系统</h1>
 </div>
 <div style="text-align:center">
-<el-button @click="goLogin" style="width:30%;margin-bottom:15px;">
-    我是买家
+<el-button @click="myRedirect('/user_login/')" style="width:30%;margin-bottom:15px;">
+    用户登录
 </el-button>
 </div>
     <div style="text-align:center">
-    <el-button @click="goSlogin" style="width:30%;margin-bottom:15px;">
-    我是商家
+    <el-button @click="myRedirect('/poster_login/')" style="width:30%;margin-bottom:15px;">
+    跑腿登录
+</el-button>
+    </div>
+    <div style="text-align:center">
+    <el-button @click="myRedirect('/manager_login/')" style="width:30%;margin-bottom:15px;">
+    后台登录
 </el-button>
     </div>
 </div>
 <script>
-    const local = 'http://localhost:8000/';
     new Vue({
         el: "#app",
         methods: {
-            goLogin:function(){
-                let index_url = local+'login/';
-                fetch(index_url, {
+            myRedirect:function (s){
+               fetch(s, {
                         method: 'GET',
                     }).then(function(response) {
-                        // console.log(response)
-                        window.location.replace(index_url)
+                        window.location.replace(s)
                     }).catch(function(err) {
-                        // 出错了;等价于 then 的第二个参数,但这样更好用更直观 :(
                     });
-            },
-            goSlogin:function(){
-                let index_url = local+'slogin/';
-                fetch(index_url, {
-                        method: 'GET',
-                    }).then(function(response) {
-                        // console.log(response)
-                        window.location.replace(index_url)
-                    }).catch(function(err) {
-                        // 出错了;等价于 then 的第二个参数,但这样更好用更直观 :(
-                    });
-            },
+            }
         }
     })
 </script>

@@ -23,5 +23,5 @@ urlpatterns = [
     path('poster_login/', views.poster_login),
     path('manager_login/', views.manager_login),
     path("home/", views.home),
-    # path("req/", views.req),
+    path("poster_index/", views.poster_index),
 ]
