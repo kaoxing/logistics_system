@@ -5,8 +5,8 @@
 python(或者改成django所在解释器的python.exe路径) manage.py runserver
 ```
 ### 如果有报错缺少相应Model则安装指定包即可
-### 该项目django版本为3.2
-### <a herf = "https://docs.djangoproject.com/zh-hans/3.0/">官方文档</a>
+### 该项目所使用django版本为3.2
+[官方文档](https://docs.djangoproject.com/zh-hans/3.0/)
 ***
 ### app01/my_tools.py
 my_tools.py 里是所有需要实现的与数据库操作或数据处理有关的方法
