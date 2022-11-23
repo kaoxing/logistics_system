@@ -53,37 +53,6 @@ def aes_decrypt(secret_key, data):
     return unpad_decrypt_data
 
 
-# if __name__ == '__main__':
-#     key = "22"  # 长度为256位
-#     path1 = "C:\\Users\\kaoxing\\Desktop\\secret\\1.mp4"
-#     path2 = "C:\\Users\\kaoxing\\Desktop\\secret\\temp"
-#     path3 = "C:\\Users\\kaoxing\\Desktop\\secret\\2.mp4"
-#     file = open(path1, 'rb')
-#     save = open(path2, 'wb')
-#     result = open(path3, 'wb')
-#     for line in file:
-#         # print(line)
-#         temp = aes_encrypt(key, line)
-#         # print(temp)
-#         save.write(temp + "\n".encode("utf-8"))
-#         # temp = aes_decrypt(key, temp)
-#         # result.write(temp)
-#     file.close()
-#     save.close()
-#     # result.close()
-#     save = open(path2, 'rb')
-#     for line in save:
-#         # print(line)
-#         # temp = aes_encrypt(key, line)
-#         # print(temp)
-#         # save.write(temp)
-#         temp = aes_decrypt(key, line)
-#         result.write(temp)
-#     # file.close()
-#     save.close()
-#     result.close()
-
-
 # 加密
 # def encode(source, save, key):
 #     key = adjust(key)

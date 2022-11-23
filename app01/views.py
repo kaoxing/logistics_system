@@ -11,7 +11,7 @@ sys.path.append(current_directory)
 import coder
 import my_tools as tls
 
-# D:\anaconda\envs\database\python.exe manage.py runserver
+# python manage.py runserver
 local = "http://127.0.0.1:8000/"
 
 
