@@ -1,0 +1,291 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+</head>
+<body>
+<script src="{% static '/js/vue.js'%}"></script>
+<script src="{% static '/js/element-ui/lib/index.js'%}"></script>
+<link rel="stylesheet" href="{% static '/js/element-ui/lib/theme-chalk/index.css'%}">
+<div id="app">
+    <div  style="text-align:right">
+        <span>---欢迎您，{{name}}---</span>
+        <el-button type="primary" @click="goSetting">账号设置</el-button>
+        <el-button type="danger" @click="goLogin">退出账号</el-button>
+    </div>
+    <br>
+    <div style="text-align:center">
+        <el-button type="success" @click="myRefresh" style="width:30%;margin-bottom:15px;">
+            刷   新   订   单
+        </el-button>
+    </div>
+    <br>
+    <el-table
+      :data="dataTable"
+      style="width: 100%">
+      <el-table-column
+        prop="shop_name"
+        label="商家名"
+        width="210">
+      </el-table-column>
+        <el-table-column
+        prop="shop_num"
+        label="商家编号"
+        width="210">
+      </el-table-column>
+        <el-table-column
+        prop="goods_name"
+        label="商品名"
+        width="210">
+      </el-table-column>
+        <el-table-column
+        prop="goods_num"
+        label="商品编号"
+        width="210">
+      </el-table-column>
+        <el-table-column
+        prop="goods_price"
+        label="商品单价"
+        width="210">
+      </el-table-column>
+        <el-table-column
+        prop="inventory_number"
+        label="库存数量"
+        width="190">
+      </el-table-column>
+        <el-table-column
+        prop="inventory_sold"
+        label="已售数量"
+        width="190">
+      </el-table-column>
+        <el-table-column label="操作" prop="action" align="center">
+          <div  slot-scope="scope">
+            <el-button type="primary" @click="showDialog(scope.$index, scope.row)">查看商品详情</el-button>
+              <el-button type="primary" @click="getComment(scope.$index, scope.row)">查看商品评论</el-button>
+              <el-button type="success" @click="addCar(scope.$index, scope.row)">加入购物车</el-button>
+          </div>
+        </el-table-column>
+    </el-table>
+    <el-dialog
+    title="商品详细"
+    :visible.sync="dialogVisible"
+    width="50%"
+    :show-close="show">
+         <span>商品信息：</span>
+    <el-input type="textarea" v-model="goods_show"></el-input>
+         <span>商家信息：</span>
+         <el-input type="textarea" v-model="shopper_show"></el-input>
+        <span>商品图片:</span><br>
+        <el-image
+          :src="photo_url"
+          fit="fill">
+        </el-image>
+    <span slot="footer" class="dialog-footer">
+    <el-button type="primary" @click="closeDialog">确 定</el-button>
+    </span>
+    </el-dialog>
+    <el-dialog
+    title="商品评论"
+    :visible.sync="dialogVisible1"
+    width="52%"
+    :show-close="show">
+     <el-table
+      :data="evaluationTable"
+      style="width: 100%">
+      <el-table-column
+        prop="evaluation_time"
+        label="评论时间"
+        width="200">
+      </el-table-column>
+        <el-table-column
+        prop="shopper_num"
+        label="评论账号"
+        width="200">
+      </el-table-column>
+        <el-table-column
+        prop="shopper_name"
+        label="名称"
+        width="200">
+      </el-table-column>
+     <el-table-column
+        prop="evaluation_information"
+        label="评论信息"
+        width="355">
+      </el-table-column>
+    </el-table>
+    <span slot="footer" class="dialog-footer">
+    <el-button type="primary" @click="closeDialog1">确 定</el-button>
+    </span>
+    </el-dialog>
+</div>
+<script>
+    let table=[];
+    let load={
+        info:"",
+        way:"",
+        id:"{{id}}",
+        goods_num:"",
+    };
+    let evaTable=[]
+    const local="http://localhost:8000/";
+    let temp;
+    let user_msg={name:"{{name}}",id:"{{id}}",pwd:"{{pwd}}"};
+    let search=new Vue({
+        el:"#app",
+        data:{
+            dataTable:table,
+            evaluationTable:evaTable,
+            dialogVisible: false,
+            goods_show:"",
+            shopper_show:"",
+            photo_url:"",
+            show:false,
+            dialogVisible1: false,
+        },
+        methods:{
+            addCar:function(index,row){
+                load.goods_num=row.goods_num;
+                load.way="加购物车";
+                const h = this.$createElement;
+                 this.$notify({
+                  title: '成功提示',
+                  message: h('i', { style: 'color: teal'}, "商品 “"+row.goods_name+'” 已添加至购物车')
+                });
+                let sear_url = local+"index/?name={{name}}&id={{id}}&pwd={{pwd}}";
+                fetch(sear_url, {
+                        method: 'POST',
+                        mode:'cors',
+                        headers: {
+                            'Content-Type': 'application/json',
+                          },
+                        body:JSON.stringify(load)
+                    }).then(function(response) {
+                    }).then(function(responseJson) {
+                    });
+            },
+            closeDialog:function(){
+                this.dialogVisible = false;
+            },
+            showDialog:function(index, row){
+                this.goods_show=table[index].goods_description;
+                this.shopper_show=table[index].shopper_description;
+                this.photo_url=table[index].goods_photo;
+                this.dialogVisible = true;
+            },
+            myRefresh:function(){
+                let fresh_url = local+"index/?name={{name}}&id={{id}}&pwd={{pwd}}";
+                fetch(fresh_url, {
+                        method: 'POST',
+                        mode:'cors',
+                        headers: {
+                            'Content-Type': 'application/json',
+                          },
+                        body:JSON.stringify(load)
+                    }).then(function(response) {
+                        return response.json();
+                    }).then(function(responseJson) {
+                        temp=responseJson.data;
+                        table.splice(0,table.length);
+                        let i = 0;
+                        for(;i<temp.length;i++){
+                            table.push(temp[i]);
+                            // console.log(temp[i]);
+                        }
+                    });
+            },
+            closeDialog1:function(){
+                this.dialogVisible1 = false;
+            },
+            getComment:function(index,row){
+                load.way = "查看评论";
+                load.goods_num = row.goods_num;
+                let sear_url = local+"index/?name={{name}}&id={{id}}&pwd={{pwd}}";
+                this.dialogVisible1 = true;
+                fetch(sear_url, {
+                        method: 'POST',
+                        mode:'cors',
+                        headers: {
+                            'Content-Type': 'application/json',
+                          },
+                        body:JSON.stringify(load)
+                    }).then(function(response) {
+                        return response.json();
+                    }).then(function(responseJson) {
+                        temp=responseJson.data;
+                        evaTable.splice(0,evaTable.length);
+                        let i = 0;
+                        for(;i<temp.length;i++){
+                            evaTable.push(temp[i]);
+                            // console.log(temp[i]);
+                        }
+                    });
+            },
+            goCar:function(){
+                load.info=this.searinfo;
+                load.des="person";
+                let person_url = local+'car/?name={{name}}&id={{id}}&pwd={{pwd}}';
+                fetch(person_url, {
+                        method: 'GET',
+                    }).then(function(response) {
+                        // console.log(response)
+                        window.location.replace(response.url)
+                    }).catch(function(err) {
+                        // 出错了;等价于 then 的第二个参数,但这样更好用更直观 :(
+                    });
+            },
+            goLogin:function(){
+                let login_url = local+'login/';
+                fetch(login_url, {
+                        method: 'GET',
+                    }).then(function(response) {
+                        // console.log(response)
+                        window.location.replace(response.url)
+                    }).catch(function(err) {
+                        // 出错了;等价于 then 的第二个参数,但这样更好用更直观 :(
+                    });
+            },
+            goSetting:function(){
+                load.info=this.searinfo;
+                load.des="person";
+                let person_url = local+'setting/?name={{name}}&id={{id}}&pwd={{pwd}}';
+                fetch(person_url, {
+                        method: 'GET',
+                    }).then(function(response) {
+                        // console.log(response)
+                        window.location.replace(response.url)
+                    }).catch(function(err) {
+                        // 出错了;等价于 then 的第二个参数,但这样更好用更直观 :(
+                    });
+            },
+            goOrder:function(){
+                let person_url = local+'order/?name={{name}}&id={{id}}&pwd={{pwd}}';
+                fetch(person_url, {
+                        method: 'GET',
+                    }).then(function(response) {
+                        // console.log(response)
+                        window.location.replace(response.url)
+                    }).catch(function(err) {
+                        // 出错了;等价于 then 的第二个参数,但这样更好用更直观 :(
+                    });
+            },
+            goWallet:function(){
+                load.info=this.searinfo;
+                load.des="person";
+                let person_url = local+'wallet/?name={{name}}&id={{id}}&pwd={{pwd}}';
+                fetch(person_url, {
+                        method: 'GET',
+                    }).then(function(response) {
+                        // console.log(response)
+                        window.location.replace(response.url)
+                    }).catch(function(err) {
+                        // 出错了;等价于 then 的第二个参数,但这样更好用更直观 :(
+                    });
+            },
+
+        }
+    })
+</script>
+</body>
+</html>
