@@ -4,9 +4,16 @@
 ```
 python(或者改成django所在解释器的python.exe路径) manage.py runserver
 ```
-### 如果有报错缺少相应Model则安装指定包即可
+***
 ### 该项目所使用django版本为3.2
 [官方文档](https://docs.djangoproject.com/zh-hans/3.0/)
+***
+### 如果有报错缺少相应Model则安装指定包即可
+```
+若缺少corsheads，则 pip install django-cors-headers
+若缺少数据库连接相关，则 pip install psycopg2
+若缺少加密模块，则 pip install Cryptography
+```
 ***
 ### app01/my_tools.py
 my_tools.py 里是所有需要实现的与数据库操作或数据处理有关的方法

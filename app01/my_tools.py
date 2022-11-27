@@ -4,13 +4,10 @@ import random
 import re
 from pathlib import Path
 from django.db import connection
-from sqlalchemy.dialects.mysql import pymysql
-
 
 import coder
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 #   例子，该方法在数据库中寻找用户
 # def user_exist(id, pwd):
@@ -23,7 +20,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #    return None
 
 
-
 def user_exist(id, pwd):
     # todo 用户登录，返回为None则不存在，否则返回用户昵称
     cursor = connection.cursor()
@@ -33,9 +29,10 @@ def user_exist(id, pwd):
     print(rows)
     return "xing"
 # test
-id = 'yh2014001'
-pwd = 'yh2014001'
-user_exist(id, pwd)
+
+# id = 'yh2014001'
+# pwd = 'yh2014001'
+# user_exist(id, pwd)
 
 
 
