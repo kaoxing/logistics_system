@@ -30,9 +30,9 @@ def user_exist(id, pwd):
     return "xing"
 # test
 
-# id = 'yh2014001'
-# pwd = 'yh2014001'
-# user_exist(id, pwd)
+id = 'yh2014001'
+pwd = 'yh2014001'
+user_exist(id, pwd)
 
 
 
