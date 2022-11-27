@@ -4,6 +4,9 @@ import random
 import re
 from pathlib import Path
 from django.db import connection
+from sqlalchemy.dialects.mysql import pymysql
+
+
 import coder
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +23,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #    return None
 
 
+
 def user_exist(id, pwd):
     # todo 用户登录，返回为None则不存在，否则返回用户昵称
     cursor = connection.cursor()
+    sql = "select * from 用户信息表 where 用户_账号='{}'".format(id)  # sql语句
+    cursor.execute(sql)  # 执行sql
+    rows = cursor.fetchall()  # 获取执行结果rows
+    print(rows)
     return "xing"
+# test
+id = 'yh2014001'
+pwd = 'yh2014001'
+user_exist(id, pwd)
+
 
 
 def poster_exist(id, pwd):
@@ -41,3 +54,5 @@ def manager_exist(id, pwd):
 def poster_get_order(id, pwd):
     # todo 获取跑腿人员分配到的订单，返回一个数组，数组内为订单信息
     pass
+
+
