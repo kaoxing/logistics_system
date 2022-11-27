@@ -26,24 +26,28 @@ def user_exist(id, pwd):
     sql = "select * from 用户信息表 where 用户_账号='{}'".format(id)  # sql语句
     cursor.execute(sql)  # 执行sql
     rows = cursor.fetchall()  # 获取执行结果rows
-    print(rows)
-    return "xing"
-# test
+    print(rows) # 下标从0开始
+    if len(rows) != 0 and rows[0][1] == pwd:
+         str = rows[0][3].rstrip() # 去除串结尾空格
+         return str
+    return None
 
-id = 'yh2014001'
-pwd = 'yh2014001'
-user_exist(id, pwd)
+# user_exist test
+# id = 'yh2014001'
+# pwd = 'yh2014001'
+# use_name=user_exist(id, pwd)
+# print(use_name,'name')
 
 
 
 def poster_exist(id, pwd):
     # todo 跑腿登录，返回为None则不存在，
     cursor = connection.cursor()
-    return "Xing"
+    return None
 
 
 def manager_exist(id, pwd):
-    # todo 跑腿登录，返回为None则不存在，否则返回用户昵称
+    # todo 后台登录，返回为None则不存在，否则返回用户昵称
     cursor = connection.cursor()
     return "kao"
 
