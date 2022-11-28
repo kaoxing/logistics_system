@@ -19,6 +19,17 @@ CREATE TABLE 跑腿人员信息表
 FOREIGN KEY(跑腿_驿站编号) REFERENCES 驿站信息表(驿站_编号)
 );
 
+CREATE TABLE 跑腿人员信息表
+(
+跑腿_工号 char(9)  PRIMARY KEY,
+跑腿_姓名 char(40) NOT NULL,
+跑腿_身份证号 char(18) NOT NULL,
+跑腿_电话 char(11) NOT NULL,
+跑腿_驿站编号 char(3),
+跑腿_账号 char(9),
+跑腿_密码 char(9),
+FOREIGN KEY(跑腿_驿站编号) REFERENCES 驿站信息表(驿站_编号)
+);
 
 CREATE TABLE 用户信息表
 (
@@ -60,4 +71,4 @@ DROP TABLE 订单表 CASCADE;
 DROP TABLE 配送表 CASCADE;
 
 ALTER TABLE userinfo RENAME TO 用户信息表; #修改表名
-ALTER TABLE 用户信息表 RENAME COLUMN use_id TO 用户_账号; #修该列名
+ALTER TABLE 用户信息表 RENAME COLUMN use_id TO 用户_账号;#修该列名
