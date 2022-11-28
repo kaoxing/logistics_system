@@ -26,7 +26,6 @@ def user_exist(id, pwd):
     sql = "select * from 用户信息表 where 用户_账号='{}'".format(id)  # sql语句
     cursor.execute(sql)  # 执行sql
     rows = cursor.fetchall()  # 获取执行结果rows
-    print(rows) # 下标从0开始
     if len(rows) != 0 and rows[0][1] == pwd:
          str = rows[0][3].rstrip() # 去除串结尾空格
          return str
@@ -41,10 +40,21 @@ def user_exist(id, pwd):
 
 
 def poster_exist(id, pwd):
-    # todo 跑腿登录，返回为None则不存在，
+    # todo 跑腿登录，返回为None则不存在，否则返回跑腿昵称
     cursor = connection.cursor()
+    sql = "select * from 跑腿人员信息表 where 跑腿_账号='{}'".format(id)  # sql语句
+    cursor.execute(sql)  # 执行sql
+    rows = cursor.fetchall()  # 获取执行结果rows
+    if len(rows) != 0 and rows[0][6] == pwd:
+        str = rows[0][1].rstrip()  # 去除串结尾空格
+        return str
     return None
 
+# poster_exist test
+# id = 'pt2014001'
+# pwd = 'pt2014001'
+# use_name=poster_exist(id, pwd)
+# print(use_name,'name')
 
 def manager_exist(id, pwd):
     # todo 后台登录，返回为None则不存在，否则返回用户昵称
