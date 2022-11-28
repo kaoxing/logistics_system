@@ -59,8 +59,19 @@ def poster_exist(id, pwd):
 def manager_exist(id, pwd):
     # todo 后台登录，返回为None则不存在，否则返回用户昵称
     cursor = connection.cursor()
-    return "kao"
+    sql = "select * from 用户信息表 where 用户_账号='{}'".format(id)  # sql语句
+    cursor.execute(sql)  # 执行sql
+    rows = cursor.fetchall()  # 获取执行结果rows
+    if len(rows) != 0 and rows[0][1] == pwd:
+        str = rows[0][3].rstrip()  # 去除串结尾空格
+        return str
+    return None
 
+# manager_exist test
+# id = 'yh2014001'
+# pwd = 'yh2014001'
+# use_name=manager_exist(id, pwd)
+# print(use_name,'name')
 
 def poster_get_order(id, pwd):
     # todo 获取跑腿人员分配到的订单，返回一个数组，数组内为订单信息
