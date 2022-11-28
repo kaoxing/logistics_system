@@ -75,6 +75,32 @@ def manager_exist(id, pwd):
 
 def poster_get_order(id, pwd):
     # todo 获取跑腿人员分配到的订单，返回一个数组，数组内为订单信息
-    pass
+    cursor = connection.cursor()
+    sql = "select * from order_poster_view where 配送_工号 = '{}'".format(id)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    if len(rows) != 0 and rows[0][1] == pwd:
+        list = []
+        for row in rows:
+            dic = {
+                "工号": row[0],
+                "订单编号": row[2],
+                '驿站编号': row[3],
+                "收件电话": row[4],
+                '是否退货': row[5],
+                "是否签收": row[6]
+            }
+            list.append(dic)
+        return list
+
+    return None
+
+# poster_get_order test
+# id = 'pt2014001'
+# pwd = 'pt2014001'
+# list=poster_get_order(id, pwd)
+# print(list)
+
+pass
 
 
