@@ -74,7 +74,7 @@ def manager_exist(id, pwd):
 # print(use_name,'name')
 
 def poster_get_order(id, pwd):
-    # todo 获取跑腿人员分配到的订单，返回一个数组，数组内为订单信息
+    # todo 获取跑腿人员分配到的订单，返回一个数组，数组为订单信息
     cursor = connection.cursor()
     sql = "select * from order_poster_view where 配送_工号 = '{}'".format(id)
     cursor.execute(sql)
