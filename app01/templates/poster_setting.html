@@ -61,7 +61,7 @@
                 load.resultName = this.name;
                 load.sourcePwd = this.sourcePwd;
                 load.resultPwd = this.resultPwd;
-                fetch(local+'setting/', {
+                fetch('/poster_setting/', {
                     method: 'POST',
                     mode: 'cors',
                     headers: {
@@ -74,11 +74,12 @@
                     data = responseJson.data;
                     console.log(data)
                     if(data[0]){
-                        url =local + "setting/" + "?id=" + '{{id}}' + "&name=" + data[1] + "&pwd=" + data[2];
+                        url =local + "poster_setting/" + "?id=" + '{{id}}' + "&name=" + data[1] + "&pwd=" + data[2];
+                        alert("修改成功")
                         window.location.replace(url)
                     }else{
                         url =local + "setting/" + "?id=" + '{{id}}' + "&name=" + data[1] + "&pwd=" + data[2];
-                        alert("密码错误或长度有误，密码修改失败\n注意：5<len(password)<13")
+                        alert("密码错误，修改失败")
                         window.location.replace(url)
                     }
                 });

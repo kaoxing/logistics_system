@@ -127,7 +127,7 @@
                 }
                 load.ope = "配送";
                 load.订单编号 = row.订单编号;
-                fetch("/poster_index/?name={{name}}&id={{id}}&pwd={{pwd}}", {
+                fetch("/user_index/?name={{name}}&id={{id}}&pwd={{pwd}}", {
                     method: 'POST',
                     mode: 'cors',
                     headers: {
@@ -136,13 +136,13 @@
                     body: JSON.stringify(load)
                     }).then(function(response) {
                         // let url = 'http://localhost:8000/setting/?name='+this.name+'&id={{id}}'+'&pwd='+this.resultPwd;
-                        window.location.replace("/poster_index/?name={{name}}&id={{id}}&pwd={{pwd}}")
+                        window.location.replace("/user_index/?name={{name}}&id={{id}}&pwd={{pwd}}")
                     }).catch(function(err) {
                         // 出错了;
                     });
             },
             myRefresh:function(){
-                let fresh_url = "/poster_index/?name={{name}}&id={{id}}&pwd={{pwd}}";
+                let fresh_url = "/user_index/?name={{name}}&id={{id}}&pwd={{pwd}}";
                 console.log(load);
                 fetch(fresh_url, {
                         method: 'POST',
@@ -179,10 +179,10 @@
                 map.addOverlay(marker);
             },
             goLogin:function(){
-                window.location.replace('/poster_login/')
+                window.location.replace('/user_login/')
             },
             goSetting:function(){
-                window.location.replace("/poster_setting/?name={{name}}&id={{id}}&pwd={{pwd}}");
+                window.location.replace("/user_setting/?name={{name}}&id={{id}}&pwd={{pwd}}");
             },
 
         }

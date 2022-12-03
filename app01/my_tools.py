@@ -33,13 +33,6 @@ def user_exist(id, pwd):
     return None
 
 
-# user_exist test
-# id = 'yh2014001'
-# pwd = 'yh2014001'
-# use_name=user_exist(id, pwd)
-# print(use_name,'name')
-
-
 def poster_exist(id, pwd):
     # todo 跑腿登录，返回为None则不存在，否则返回跑腿昵称
     cursor = connection.cursor()
@@ -52,12 +45,6 @@ def poster_exist(id, pwd):
     return None
 
 
-# poster_exist test
-# id = 'pt2014001'
-# pwd = 'pt2014001'
-# use_name=poster_exist(id, pwd)
-# print(use_name,'name')
-
 def manager_exist(id, pwd):
     # todo 后台登录，返回为None则不存在，否则返回用户昵称
     cursor = connection.cursor()
@@ -69,12 +56,6 @@ def manager_exist(id, pwd):
         return str
     return None
 
-
-# manager_exist test
-# id = 'yh2014001'
-# pwd = 'yh2014001'
-# use_name=manager_exist(id, pwd)
-# print(use_name,'name')
 
 def poster_get_order(id):
     # todo 获取跑腿人员分配到的订单，返回一个数组，数组为订单信息
@@ -96,13 +77,29 @@ def poster_get_order(id):
         list.append(dic)
     return list
 
-# poster_get_order test
-# id = 'pt2014001'
-# pwd = 'pt2014001'
-# list=poster_get_order(id, pwd)
-# print(list)
-
 
 def poster_deliver(order_num):
     # todo 订单配送,参数位订单编号，要求若配送状态为"还未配送"则更新为”正在配送“，若为”正在配送“则更新为“已经送达”
+    pass
+
+
+def poster_change_info(id, rName, sPwd, rPwd):
+    # todo 跑腿账号信息修改，参数为跑腿账号，跑腿要改为的名字，原密码，要改为的密码，
+    #  要求先改名，此时不检验密码是否正确，再改密码，此时需要先确认原密码正确，再改密码，若要改为的密码为空，则不做修改
+    cursor = connection.cursor()
+    sql = ""  # 改名
+    cursor.execute(sql)
+    if len(rPwd) == 0:  # 若要改为的密码为空，则直接返回True不做修改
+        return True
+    sql = ""  # 验证原密码
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    if len(rows) == 0:  # 若原密码错误，返回False
+        return False
+    sql = ""  # 修改密码
+    cursor.execute(sql)
+    return True  # 成功修改完密码后返回True
+
+def setting_get_poster_pwd(id):
+    # todo 通过跑腿账号获取跑腿账号密码,要求返回获取到的密码
     pass

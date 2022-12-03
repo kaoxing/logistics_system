@@ -101,27 +101,32 @@ def poster_index(request):
     print(ret_list)
     return JsonResponse({"data": ret_list})
 
+
 def poster_setting(request):
     """跑腿设置"""
     if request.method == 'GET':
         data = request.GET
         id = data.get('id')
-        if id is None:
-            return redirect(local + "poster_login/")
         name = data.get('name')
         pwd = data.get('pwd')
+        if id is None:
+            return redirect(local + "poster_login/")
         return render(request, "poster_setting.html", {'name': name, 'id': id, 'pwd': pwd})
+    # 接收到修改请求
     data = json.loads(request.body)
-    ope = data.get("ope")
-    if ope == "配送":
-        order_num = data.get("订单编号")
-        tls.poster_deliver(order_num)
-        return JsonResponse()
-    ret_list = []
-    id = data.get("id")
-    ret_list = tls.poster_get_order(id)
-    print(ret_list)
-    return JsonResponse({"data": ret_list})
+    id = data.get('id')
+    rName = data.get('resultName')
+    sPwd = data.get('sourcePwd')
+    rPwd = data.get('resultPwd')
+    ans = [tls.poster_change_info(id, rName, sPwd, rPwd), rName]
+    pwd = tls.setting_get_poster_pwd(id)
+    if ans[0]:
+        pwd = coder.encode(pwd, id)
+        ans.append(pwd)
+        return JsonResponse({"data": ans})
+    pwd = coder.encode(pwd, id)
+    ans.append(pwd)
+    return JsonResponse({"data": ans})
 
 
 def user_index(request):
