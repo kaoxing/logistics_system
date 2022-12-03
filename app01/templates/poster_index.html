@@ -8,6 +8,13 @@
 <body>
 <script src="{% static '/js/vue.js'%}"></script>
 <script src="{% static '/js/element-ui/lib/index.js'%}"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+		body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+	</style>
+	<script type="text/javascript" src="//api.map.baidu.com/api?v=3.0&ak=1R0nWQNYAZyApzIg8IwgeRUxIpA5KsW9"></script>
+	<title>根据城市名设置地图中心点</title>
 <link rel="stylesheet" href="{% static '/js/element-ui/lib/theme-chalk/index.css'%}">
 <div id="app">
     <div  style="text-align:right">
@@ -25,46 +32,38 @@
     <el-table
       :data="dataTable"
       style="width: 100%">
+        <el-table-column
+        width="100">
+      </el-table-column>
       <el-table-column
-        prop="shop_name"
-        label="商家名"
-        width="210">
+        prop="驿站编号"
+        label="驿站编号"
+        width="200">
+      </el-table-column>
+      <el-table-column
+        prop="订单编号"
+        label="订单编号"
+        width="200">
       </el-table-column>
         <el-table-column
-        prop="shop_num"
-        label="商家编号"
-        width="210">
+        prop="收件电话"
+        label="收件电话"
+        width="200">
       </el-table-column>
         <el-table-column
-        prop="goods_name"
-        label="商品名"
-        width="210">
+        prop="是否退货"
+        label="是否退货"
+        width="200">
       </el-table-column>
         <el-table-column
-        prop="goods_num"
-        label="商品编号"
-        width="210">
-      </el-table-column>
-        <el-table-column
-        prop="goods_price"
-        label="商品单价"
-        width="210">
-      </el-table-column>
-        <el-table-column
-        prop="inventory_number"
-        label="库存数量"
-        width="190">
-      </el-table-column>
-        <el-table-column
-        prop="inventory_sold"
-        label="已售数量"
-        width="190">
+        prop="是否签收"
+        label="是否签收"
+        width="200">
       </el-table-column>
         <el-table-column label="操作" prop="action" align="center">
           <div  slot-scope="scope">
-            <el-button type="primary" @click="showDialog(scope.$index, scope.row)">查看商品详情</el-button>
-              <el-button type="primary" @click="getComment(scope.$index, scope.row)">查看商品评论</el-button>
-              <el-button type="success" @click="addCar(scope.$index, scope.row)">加入购物车</el-button>
+            <el-button type="primary" @click="deliver(scope.$index, scope.row)">确认送到</el-button>
+              <el-button type="primary" @click="showMap(scope.$index, scope.row)">查看配送地点</el-button>
           </div>
         </el-table-column>
     </el-table>
@@ -87,44 +86,18 @@
     </span>
     </el-dialog>
     <el-dialog
-    title="商品评论"
-    :visible.sync="dialogVisible1"
-    width="52%"
-    :show-close="show">
-     <el-table
-      :data="evaluationTable"
-      style="width: 100%">
-      <el-table-column
-        prop="evaluation_time"
-        label="评论时间"
-        width="200">
-      </el-table-column>
-        <el-table-column
-        prop="shopper_num"
-        label="评论账号"
-        width="200">
-      </el-table-column>
-        <el-table-column
-        prop="shopper_name"
-        label="名称"
-        width="200">
-      </el-table-column>
-     <el-table-column
-        prop="evaluation_information"
-        label="评论信息"
-        width="355">
-      </el-table-column>
-    </el-table>
-    <span slot="footer" class="dialog-footer">
-    <el-button type="primary" @click="closeDialog1">确 定</el-button>
-    </span>
+      title="地图"
+      :visible.sync="dialogVisible1"
+      width="30%">
+        <div id="l-map" style="height: 600px"></div>
     </el-dialog>
+
 </div>
 <script>
     let table=[];
     let load={
         info:"",
-        way:"",
+        ope:"",
         id:"{{id}}",
         goods_num:"",
     };
@@ -145,37 +118,33 @@
             dialogVisible1: false,
         },
         methods:{
-            addCar:function(index,row){
-                load.goods_num=row.goods_num;
-                load.way="加购物车";
-                const h = this.$createElement;
-                 this.$notify({
-                  title: '成功提示',
-                  message: h('i', { style: 'color: teal'}, "商品 “"+row.goods_name+'” 已添加至购物车')
-                });
-                let sear_url = local+"index/?name={{name}}&id={{id}}&pwd={{pwd}}";
-                fetch(sear_url, {
-                        method: 'POST',
-                        mode:'cors',
-                        headers: {
-                            'Content-Type': 'application/json',
-                          },
-                        body:JSON.stringify(load)
-                    }).then(function(response) {
-                    }).then(function(responseJson) {
-                    });
-            },
             closeDialog:function(){
                 this.dialogVisible = false;
             },
-            showDialog:function(index, row){
-                this.goods_show=table[index].goods_description;
-                this.shopper_show=table[index].shopper_description;
-                this.photo_url=table[index].goods_photo;
-                this.dialogVisible = true;
+            deliver:function (index,row){
+                if(row.是否退货 == 'Y' || row.是否签收 == 'Y'){
+                    alert("当前无法签收")
+                    return;
+                }
+                load.ope = "配送";
+                load.订单编号 = row.订单编号;
+                fetch("/poster_index/?name={{name}}&id={{id}}&pwd={{pwd}}", {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(load)
+                    }).then(function(response) {
+                        // let url = 'http://localhost:8000/setting/?name='+this.name+'&id={{id}}'+'&pwd='+this.resultPwd;
+                        window.location.replace("/poster_index/?name={{name}}&id={{id}}&pwd={{pwd}}")
+                    }).catch(function(err) {
+                        // 出错了;
+                    });
             },
             myRefresh:function(){
-                let fresh_url = local+"index/?name={{name}}&id={{id}}&pwd={{pwd}}";
+                let fresh_url = local+"poster_index/?name={{name}}&id={{id}}&pwd={{pwd}}";
+                console.log(load);
                 fetch(fresh_url, {
                         method: 'POST',
                         mode:'cors',
@@ -195,48 +164,23 @@
                         }
                     });
             },
-            closeDialog1:function(){
-                this.dialogVisible1 = false;
-            },
-            getComment:function(index,row){
-                load.way = "查看评论";
-                load.goods_num = row.goods_num;
-                let sear_url = local+"index/?name={{name}}&id={{id}}&pwd={{pwd}}";
+            showMap:function(index,row){
                 this.dialogVisible1 = true;
-                fetch(sear_url, {
-                        method: 'POST',
-                        mode:'cors',
-                        headers: {
-                            'Content-Type': 'application/json',
-                          },
-                        body:JSON.stringify(load)
-                    }).then(function(response) {
-                        return response.json();
-                    }).then(function(responseJson) {
-                        temp=responseJson.data;
-                        evaTable.splice(0,evaTable.length);
-                        let i = 0;
-                        for(;i<temp.length;i++){
-                            evaTable.push(temp[i]);
-                            // console.log(temp[i]);
-                        }
-                    });
+                setTimeout(() => {
+                    this.baiduMap()
+                }, 0);
             },
-            goCar:function(){
-                load.info=this.searinfo;
-                load.des="person";
-                let person_url = local+'car/?name={{name}}&id={{id}}&pwd={{pwd}}';
-                fetch(person_url, {
-                        method: 'GET',
-                    }).then(function(response) {
-                        // console.log(response)
-                        window.location.replace(response.url)
-                    }).catch(function(err) {
-                        // 出错了;等价于 then 的第二个参数,但这样更好用更直观 :(
-                    });
+            baiduMap(){
+                let map = new BMap.Map("l-map");
+                map.enableScrollWheelZoom(); //启用滚轮放大缩小，默认禁用
+                map.enableContinuousZoom(); //启用地图惯性拖拽，默认禁用
+                let point = new BMap.Point(116.404, 39.915);
+                map.centerAndZoom(point, 15);
+                let marker = new BMap.Marker(point);        // 创建标注
+                map.addOverlay(marker);
             },
             goLogin:function(){
-                let login_url = local+'login/';
+                let login_url = '/poster_login/';
                 fetch(login_url, {
                         method: 'GET',
                     }).then(function(response) {
@@ -247,28 +191,7 @@
                     });
             },
             goSetting:function(){
-                load.info=this.searinfo;
-                load.des="person";
-                let person_url = local+'setting/?name={{name}}&id={{id}}&pwd={{pwd}}';
-                fetch(person_url, {
-                        method: 'GET',
-                    }).then(function(response) {
-                        // console.log(response)
-                        window.location.replace(response.url)
-                    }).catch(function(err) {
-                        // 出错了;等价于 then 的第二个参数,但这样更好用更直观 :(
-                    });
-            },
-            goOrder:function(){
-                let person_url = local+'order/?name={{name}}&id={{id}}&pwd={{pwd}}';
-                fetch(person_url, {
-                        method: 'GET',
-                    }).then(function(response) {
-                        // console.log(response)
-                        window.location.replace(response.url)
-                    }).catch(function(err) {
-                        // 出错了;等价于 then 的第二个参数,但这样更好用更直观 :(
-                    });
+                window.location.replace("/poster_setting/?name={{name}}&id={{id}}&pwd={{pwd}}");
             },
             goWallet:function(){
                 load.info=this.searinfo;

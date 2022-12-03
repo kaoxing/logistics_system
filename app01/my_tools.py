@@ -9,6 +9,7 @@ import coder
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 #   例子，该方法在数据库中寻找用户
 # def user_exist(id, pwd):
 #    cursor = connection.cursor()
@@ -27,16 +28,16 @@ def user_exist(id, pwd):
     cursor.execute(sql)  # 执行sql
     rows = cursor.fetchall()  # 获取执行结果rows
     if len(rows) != 0 and rows[0][1] == pwd:
-         str = rows[0][3].rstrip() # 去除串结尾空格
-         return str
+        str = rows[0][3].rstrip()  # 去除串结尾空格
+        return str
     return None
+
 
 # user_exist test
 # id = 'yh2014001'
 # pwd = 'yh2014001'
 # use_name=user_exist(id, pwd)
 # print(use_name,'name')
-
 
 
 def poster_exist(id, pwd):
@@ -49,6 +50,7 @@ def poster_exist(id, pwd):
         str = rows[0][1].rstrip()  # 去除串结尾空格
         return str
     return None
+
 
 # poster_exist test
 # id = 'pt2014001'
@@ -67,33 +69,32 @@ def manager_exist(id, pwd):
         return str
     return None
 
+
 # manager_exist test
 # id = 'yh2014001'
 # pwd = 'yh2014001'
 # use_name=manager_exist(id, pwd)
 # print(use_name,'name')
 
-def poster_get_order(id, pwd):
+def poster_get_order(id):
     # todo 获取跑腿人员分配到的订单，返回一个数组，数组为订单信息
     cursor = connection.cursor()
     sql = "select * from order_poster_view where 配送_工号 = '{}'".format(id)
+    print(sql)
     cursor.execute(sql)
     rows = cursor.fetchall()
-    if len(rows) != 0 and rows[0][1] == pwd:
-        list = []
-        for row in rows:
-            dic = {
-                "工号": row[0],
-                "订单编号": row[2],
-                '驿站编号': row[3],
-                "收件电话": row[4],
-                '是否退货': row[5],
-                "是否签收": row[6]
-            }
-            list.append(dic)
-        return list
-
-    return None
+    list = []
+    for row in rows:
+        dic = {
+            "工号": row[0],
+            "订单编号": row[2],
+            '驿站编号': row[3],
+            "收件电话": row[4],
+            '是否退货': row[5],
+            "是否签收": row[6]
+        }
+        list.append(dic)
+    return list
 
 # poster_get_order test
 # id = 'pt2014001'
@@ -101,6 +102,7 @@ def poster_get_order(id, pwd):
 # list=poster_get_order(id, pwd)
 # print(list)
 
-pass
 
-
+def poster_deliver(order_num):
+    # todo 订单配送,参数位订单编号，要求若配送状态为"还未配送"则更新为”正在配送“，若为”正在配送“则更新为“已经送达”
+    pass

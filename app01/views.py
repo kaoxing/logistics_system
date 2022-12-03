@@ -90,12 +90,64 @@ def poster_index(request):
         pwd = data.get('pwd')
         return render(request, "poster_index.html", {'name': name, 'id': id, 'pwd': pwd})
     data = json.loads(request.body)
+    ope = data.get("ope")
+    if ope == "配送":
+        order_num = data.get("订单编号")
+        tls.poster_deliver(order_num)
+        return JsonResponse()
     ret_list = []
-    id = data.get("user")
-    pwd = data.get("pwd")
-    tls.poster_get_order(id, pwd)
-    # todo
+    id = data.get("id")
+    ret_list = tls.poster_get_order(id)
+    print(ret_list)
+    return JsonResponse({"data": ret_list})
+
+def poster_setting(request):
+    """跑腿设置"""
+    if request.method == 'GET':
+        data = request.GET
+        id = data.get('id')
+        if id is None:
+            return redirect(local + "poster_login/")
+        name = data.get('name')
+        pwd = data.get('pwd')
+        return render(request, "poster_setting.html", {'name': name, 'id': id, 'pwd': pwd})
+    data = json.loads(request.body)
+    ope = data.get("ope")
+    if ope == "配送":
+        order_num = data.get("订单编号")
+        tls.poster_deliver(order_num)
+        return JsonResponse()
+    ret_list = []
+    id = data.get("id")
+    ret_list = tls.poster_get_order(id)
+    print(ret_list)
     return JsonResponse({"data": ret_list})
 
 
+def user_index(request):
+    """用户主页"""
+    if request.method == 'GET':
+        data = request.GET
+        id = data.get('id')
+        if id is None:
+            return redirect(local + "user_login/")
+        name = data.get('name')
+        pwd = data.get('pwd')
+        return render(request, "user_index.html", {'name': name, 'id': id, 'pwd': pwd})
+    data = json.loads(request.body)
+    ret_list = []
+    id = data.get("user")
+    pwd = data.get("pwd")
+    ret_list = tls.user_get_order(id, pwd)
+    return JsonResponse({"data": ret_list})
 
+
+def map(request):
+    if request.method == 'GET':
+        return render(request, "map.html")
+    data = json.loads(request.body)
+    ret_list = []
+    id = data.get("user")
+    pwd = data.get("pwd")
+    ret_list = tls.user_get_order(id, pwd)
+    return JsonResponse({"data": ret_list})
