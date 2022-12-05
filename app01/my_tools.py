@@ -117,13 +117,33 @@ def poster_change_info(id, rName, sPwd, rPwd):
 
 def setting_get_poster_pwd(id):
     # todo 通过跑腿账号获取跑腿账号密码,要求返回获取到的密码
-    pass
-
+    cursor = connection.cursor()
+    sql = "select 跑腿_密码 from 跑腿人员信息表 where 跑腿_账号 = '{}'".format(id)
+    cursor.execute(sql)
+    rows = cursor.fetchall
+    return rows[0][0]
 
 def user_get_order(id):
     # todo 获取用户的订单，返回一个数组，数组为订单信息，类似poster_get_order
-    pass
-
+    cursor = connection.cursor()
+    sql = "select * from user_view where 账号 = '{}'".format(id)
+    cursor.execute(sql)
+    print(sql)
+    rows = cursor.fetchall()
+    print(rows)
+    list = []
+    for row in rows:
+        dic = {
+            "订单编号": row[0],
+            '物品名称': row[3],
+            "物品数量": row[4],
+            '是否退货': row[5],
+            "是否签收": row[6],
+            "驿站编号": row[7],
+            "收件电话": row[8]
+        }
+        list.append(dic)
+    return list
 
 def user_change_info(id, rName, sPwd, rPwd):
     # todo 用户账号信息修改，参数为用户账号，用户要改为的名字，原密码，要改为的密码，
