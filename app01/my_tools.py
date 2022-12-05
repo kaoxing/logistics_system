@@ -160,9 +160,22 @@ def user_change_info(id, rName, sPwd, rPwd):
 
 def user_receive(order_num):
     # todo 用户收货
+    cursor = connection.cursor()
+    sql = "select 订单_是否签收 from 订单表 where 订单_编号 = '{}'".format(order_num)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    print(rows[0][0])
+    print("!!!")
+    if rows[0][0] == 'N':
+        sql = "update 订单表 set 订单_是否签收 = 'Y' where 订单_编号 = '{}'".format(order_num)
+        cursor.execute(sql)
     pass
-
 
 def setting_get_user_pwd(id):
     # todo 查找用户密码
+    cursor = connection.cursor()
+    sql = "select 用户_密码 from 用户信息表 where 用户_账号 = '{}'".format(id)
+    cursor.execute(sql)
+    rows = cursor.fetchall
+    return rows[0][0]
     pass
