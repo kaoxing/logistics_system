@@ -141,9 +141,14 @@ def user_index(request):
         return render(request, "user_index.html", {'name': name, 'id': id, 'pwd': pwd})
     data = json.loads(request.body)
     ret_list = []
-    id = data.get("user")
+    id = data.get("id")
     pwd = data.get("pwd")
-    ret_list = tls.user_get_order(id, pwd)
+    ope = data.get("ope")
+    if ope == "收货":
+        order_num = data.get("订单编号")
+        tls.user_(order_num)
+        return redirect(local + "user_index/")
+    ret_list = tls.user_get_order(id)
     return JsonResponse({"data": ret_list})
 
 
@@ -173,6 +178,7 @@ def user_setting(request):
     ans.append(pwd)
     return JsonResponse({"data": ans})
 
+
 def map(request):
     if request.method == 'GET':
         return render(request, "map.html")
@@ -180,5 +186,5 @@ def map(request):
     ret_list = []
     id = data.get("user")
     pwd = data.get("pwd")
-    ret_list = tls.user_get_order(id, pwd)
+    # ret_list = tls.user_get_order(id, pwd)
     return JsonResponse({"data": ret_list})

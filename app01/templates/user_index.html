@@ -59,31 +59,18 @@
         label="是否签收"
         width="200">
       </el-table-column>
+        <el-table-column
+        prop="物流状态"
+        label="物流状态"
+        width="200">
+      </el-table-column>
         <el-table-column label="操作" prop="action" align="center">
           <div  slot-scope="scope">
-            <el-button type="primary" @click="deliver(scope.$index, scope.row)">确认送到</el-button>
+            <el-button type="primary" @click="receive(scope.$index, scope.row)">确认送到</el-button>
               <el-button type="primary" @click="showMap(scope.$index, scope.row)">查看配送地点</el-button>
           </div>
         </el-table-column>
     </el-table>
-    <el-dialog
-    title="商品详细"
-    :visible.sync="dialogVisible"
-    width="50%"
-    :show-close="show">
-         <span>商品信息：</span>
-    <el-input type="textarea" v-model="goods_show"></el-input>
-         <span>商家信息：</span>
-         <el-input type="textarea" v-model="shopper_show"></el-input>
-        <span>商品图片:</span><br>
-        <el-image
-          :src="photo_url"
-          fit="fill">
-        </el-image>
-    <span slot="footer" class="dialog-footer">
-    <el-button type="primary" @click="closeDialog">确 定</el-button>
-    </span>
-    </el-dialog>
     <el-dialog
       title="地图"
       :visible.sync="dialogVisible1"
@@ -120,12 +107,12 @@
             closeDialog:function(){
                 this.dialogVisible = false;
             },
-            recieve:function (index,row){
+            receive:function (index, row){
                 if(row.是否退货 == 'Y' || row.是否签收 == 'Y'){
                     alert("当前无法执行此操作")
                     return;
                 }
-                load.ope = "配送";
+                load.ope = "收货";
                 load.订单编号 = row.订单编号;
                 fetch("/user_index/?name={{name}}&id={{id}}&pwd={{pwd}}", {
                     method: 'POST',
