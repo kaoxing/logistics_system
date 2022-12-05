@@ -64,6 +64,7 @@ def poster_get_order(id):
     # print(sql)
     cursor.execute(sql)
     rows = cursor.fetchall()
+    print(rows)
     list = []
     for row in rows:
         dic = {
@@ -73,13 +74,13 @@ def poster_get_order(id):
             "收件电话": row[4],
             '是否退货': row[5],
             "是否签收": row[6],
-            '配送状态': row[7]
+            "物流状态": row[7],
         }
         list.append(dic)
     return list
 
 
-def c(order_num):
+def poster_deliver(order_num):
     # todo 订单配送,参数位订单编号，要求若配送状态为"还未配送"则更新为”正在配送“，若为”正在配送“则更新为“已经送达”
     cursor = connection.cursor()
     sql = "select 配送_状态 from 配送表 where 配送_订单编号 = '{}'".format(order_num)
@@ -100,18 +101,16 @@ def poster_change_info(id, rName, sPwd, rPwd):
     # todo 跑腿账号信息修改，参数为跑腿账号，跑腿要改为的名字，原密码，要改为的密码，
     #  要求先改名，此时不检验密码是否正确，再改密码，此时需要先确认原密码正确，再改密码，若要改为的密码为空，则不做修改
     cursor = connection.cursor()
-    sql = "update 跑腿人员信息表 set 跑腿_姓名='{}' where 跑腿_账号='{}'".format(rName, id)  # 改名
+    sql = ""  # 改名
     cursor.execute(sql)
-
     if len(rPwd) == 0:  # 若要改为的密码为空，则直接返回True不做修改
         return True
-    sql = "select * from 跑腿人员信息表 where 跑腿_密码 = '{}' ".format(sPwd)  # 验证原密码
+    sql = ""  # 验证原密码
     cursor.execute(sql)
     rows = cursor.fetchall()
     if len(rows) == 0:  # 若原密码错误，返回False
         return False
-
-    sql = "update 跑腿人员信息表 set 跑腿_密码= '{}'  where 跑腿_账号='{}'".format(rPwd, id)  # 修改密码
+    sql = ""  # 修改密码
     cursor.execute(sql)
     return True  # 成功修改完密码后返回True
 
@@ -141,12 +140,16 @@ def user_get_order(id):
             "物品数量": row[4],
             '是否退货': row[5],
             "是否签收": row[6],
-            "驿站编号": row[7],
-            "收件电话": row[8]
+            "配送状态": row[7],
+            "负责跑腿人员": row[8],
+            "跑腿人员电话": row[9],
+            "驿站编号": row[10],
+            "驿站电话": row[11],
+            "驿站经度": row[12],
+            "驿站纬度": row[13],
         }
         list.append(dic)
     return list
-
 
 def user_change_info(id, rName, sPwd, rPwd):
     # todo 用户账号信息修改，参数为用户账号，用户要改为的名字，原密码，要改为的密码，

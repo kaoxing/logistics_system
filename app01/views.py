@@ -146,7 +146,7 @@ def user_index(request):
     ope = data.get("ope")
     if ope == "收货":
         order_num = data.get("订单编号")
-        tls.user_(order_num)
+        tls.user_receive(order_num)
         return redirect(local + "user_index/")
     ret_list = tls.user_get_order(id)
     return JsonResponse({"data": ret_list})

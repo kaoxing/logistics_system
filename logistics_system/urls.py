@@ -26,5 +26,6 @@ urlpatterns = [
     path("poster_index/", views.poster_index),
     path("user_index/", views.user_index),
     path("poster_setting/", views.poster_setting),
+    path("user_setting/", views.user_setting),
     path("map/", views.map)
 ]
