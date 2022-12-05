@@ -80,7 +80,7 @@ def poster_get_order(id):
     return list
 
 
-def c(order_num):
+def poster_deliver(order_num):
     # todo 订单配送,参数位订单编号，要求若配送状态为"还未配送"则更新为”正在配送“，若为”正在配送“则更新为“已经送达”
     cursor = connection.cursor()
     sql = "select 配送_状态 from 配送表 where 配送_订单编号 = '{}'".format(order_num)
@@ -95,6 +95,7 @@ def c(order_num):
         sql = "update 配送表 set 配送_状态 = 'P' where 配送_订单编号 = '{}'".format(order_num)
         cursor.execute(sql)
     pass
+
 
 def poster_change_info(id, rName, sPwd, rPwd):
     # todo 跑腿账号信息修改，参数为跑腿账号，跑腿要改为的名字，原密码，要改为的密码，
@@ -122,6 +123,7 @@ def setting_get_poster_pwd(id):
     rows = cursor.fetchall
     return rows[0][0]
 
+
 def user_get_order(id):
     # todo 获取用户的订单，返回一个数组，数组为订单信息，类似poster_get_order
     cursor = connection.cursor()
@@ -144,7 +146,18 @@ def user_get_order(id):
         list.append(dic)
     return list
 
+
 def user_change_info(id, rName, sPwd, rPwd):
     # todo 用户账号信息修改，参数为用户账号，用户要改为的名字，原密码，要改为的密码，
     #  要求先改名，此时不检验密码是否正确，再改密码，此时需要先确认原密码正确，再改密码，若要改为的密码为空，则不做修改
+    pass
+
+
+def user_receive(order_num):
+    # todo 用户收货
+    pass
+
+
+def setting_get_user_pwd(id):
+    # todo 查找用户密码
     pass
