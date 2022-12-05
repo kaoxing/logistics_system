@@ -61,7 +61,7 @@ def poster_get_order(id):
     # todo 获取跑腿人员分配到的订单，返回一个数组，数组为订单信息
     cursor = connection.cursor()
     sql = "select * from order_poster_view where 配送_工号 = '{}'".format(id)
-    print(sql)
+    # print(sql)
     cursor.execute(sql)
     rows = cursor.fetchall()
     list = []
@@ -100,6 +100,17 @@ def poster_change_info(id, rName, sPwd, rPwd):
     cursor.execute(sql)
     return True  # 成功修改完密码后返回True
 
+
 def setting_get_poster_pwd(id):
     # todo 通过跑腿账号获取跑腿账号密码,要求返回获取到的密码
     pass
+
+
+def user_get_order(id):
+    # todo 获取用户的订单，返回一个数组，数组为订单信息，类似poster_get_order
+    pass
+
+
+def user_change_info(id, rName, sPwd, rPwd):
+    # todo 用户账号信息修改，参数为用户账号，用户要改为的名字，原密码，要改为的密码，
+    #  要求先改名，此时不检验密码是否正确，再改密码，此时需要先确认原密码正确，再改密码，若要改为的密码为空，则不做修改

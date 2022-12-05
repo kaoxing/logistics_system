@@ -120,7 +120,7 @@
             closeDialog:function(){
                 this.dialogVisible = false;
             },
-            deliver:function (index,row){
+            recieve:function (index,row){
                 if(row.是否退货 == 'Y' || row.是否签收 == 'Y'){
                     alert("当前无法执行此操作")
                     return;
