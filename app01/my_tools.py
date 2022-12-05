@@ -194,3 +194,29 @@ def setting_get_user_pwd(id):
     rows = cursor.fetchall
     return rows[0][0]
     pass
+
+
+def manager_get_order():
+    pass
+
+
+def manager_get_poster():
+    pass
+
+
+def manager_update_order():
+    pass
+
+
+def manager_update_poster():
+    pass
+
+
+def manager_delete_order(order_num):
+    pass
+
+
+def manager_delete_poster(poster_num):
+    pass
+
+

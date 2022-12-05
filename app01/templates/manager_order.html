@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+</head>
+<body>
+<script src="{% static '/js/vue.js'%}"></script>
+<script src="{% static '/js/element-ui/lib/index.js'%}"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+		body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+	</style>
+	<script type="text/javascript" src="//api.map.baidu.com/api?v=3.0&ak=1R0nWQNYAZyApzIg8IwgeRUxIpA5KsW9"></script>
+<link rel="stylesheet" href="{% static '/js/element-ui/lib/theme-chalk/index.css'%}">
+<div id="app">
+    <div  style="text-align:right">
+        <span>---欢迎您，{{name}}---</span>
+        <el-button type="primary" @click="goSetting">账号设置</el-button>
+        <el-button type="danger" @click="goLogin">退出账号</el-button>
+    </div>
+    <br>
+    <div style="text-align:center">
+        <el-button type="success" @click="myRefresh" style="width:30%;margin-bottom:15px;">
+            刷   新   订   单
+        </el-button>
+    </div>
+    <br>
+    <el-table
+      :data="dataTable"
+      style="width: 100%">
+        <el-table-column
+        width="100">
+      </el-table-column>
+      <el-table-column
+        prop="驿站编号"
+        label="驿站编号"
+        width="200">
+      </el-table-column>
+      <el-table-column
+        prop="订单编号"
+        label="订单编号"
+        width="200">
+      </el-table-column>
+        <el-table-column
+        prop="收件电话"
+        label="收件电话"
+        width="200">
+      </el-table-column>
+        <el-table-column
+        prop="是否退货"
+        label="是否退货"
+        width="200">
+      </el-table-column>
+        <el-table-column
+        prop="是否签收"
+        label="是否签收"
+        width="200">
+      </el-table-column>
+        <el-table-column
+        prop="物流状态"
+        label="物流状态"
+        width="200">
+      </el-table-column>
+        <el-table-column label="操作" prop="action" align="center">
+          <div  slot-scope="scope">
+            <el-button type="primary" @click="deliver(scope.$index, scope.row)">确认送到</el-button>
+              <el-button type="primary" @click="showMap(scope.$index, scope.row)">查看配送地点</el-button>
+          </div>
+        </el-table-column>
+    </el-table>
+    <el-dialog
+      title="地图"
+      :visible.sync="dialogVisible1"
+      width="30%">
+        <div id="l-map" style="height: 600px"></div>
+    </el-dialog>
+
+</div>
+<script>
+    let table=[];
+    let load={
+        info:"",
+        ope:"",
+        id:"{{id}}",
+        goods_num:"",
+    };
+    let evaTable=[]
+    const local="http://localhost:8000/";
+    let temp;
+    let user_msg={name:"{{name}}",id:"{{id}}",pwd:"{{pwd}}"};
+    let search=new Vue({
+        el:"#app",
+        data:{
+            dataTable:table,
+            evaluationTable:evaTable,
+            dialogVisible: false,
+            goods_show:"",
+            shopper_show:"",
+            photo_url:"",
+            show:false,
+            dialogVisible1: false,
+        },
+        methods:{
+            closeDialog:function(){
+                this.dialogVisible = false;
+            },
+            deliver:function (index,row){
+                if(row.是否退货 == 'Y' || row.是否签收 == 'Y'){
+                    alert("当前无法执行此操作")
+                    return;
+                }
+                load.ope = "配送";
+                load.订单编号 = row.订单编号;
+                fetch("/poster_index/?name={{name}}&id={{id}}&pwd={{pwd}}", {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(load)
+                    }).then(function(response) {
+                        // let url = 'http://localhost:8000/setting/?name='+this.name+'&id={{id}}'+'&pwd='+this.resultPwd;
+                        window.location.replace("/poster_index/?name={{name}}&id={{id}}&pwd={{pwd}}")
+                    }).catch(function(err) {
+                        // 出错了;
+                    });
+            },
+            myRefresh:function(){
+                let fresh_url = "/poster_index/?name={{name}}&id={{id}}&pwd={{pwd}}";
+                console.log(load);
+                fetch(fresh_url, {
+                        method: 'POST',
+                        mode:'cors',
+                        headers: {
+                            'Content-Type': 'application/json',
+                          },
+                        body:JSON.stringify(load)
+                    }).then(function(response) {
+                        return response.json();
+                    }).then(function(responseJson) {
+                        temp=responseJson.data;
+                        table.splice(0,table.length);
+                        let i = 0;
+                        for(;i<temp.length;i++){
+                            table.push(temp[i]);
+                            // console.log(temp[i]);
+                        }
+                    });
+            },
+            showMap:function(index,row){
+                this.dialogVisible1 = true;
+                setTimeout(() => {
+                    this.baiduMap()
+                }, 0);
+            },
+            baiduMap(){
+                let map = new BMap.Map("l-map");
+                map.enableScrollWheelZoom(); //启用滚轮放大缩小，默认禁用
+                map.enableContinuousZoom(); //启用地图惯性拖拽，默认禁用
+                let point = new BMap.Point(116.404, 39.915);
+                map.centerAndZoom(point, 15);
+                let marker = new BMap.Marker(point);        // 创建标注
+                map.addOverlay(marker);
+            },
+            goLogin:function(){
+                window.location.replace('/poster_login/')
+            },
+            goSetting:function(){
+                window.location.replace("/poster_setting/?name={{name}}&id={{id}}&pwd={{pwd}}");
+            },
+
+        }
+    })
+</script>
+</body>
+</html>
