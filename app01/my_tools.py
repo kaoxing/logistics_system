@@ -95,6 +95,7 @@ def c(order_num):
         cursor.execute(sql)
     pass
 
+
 def poster_change_info(id, rName, sPwd, rPwd):
     # todo 跑腿账号信息修改，参数为跑腿账号，跑腿要改为的名字，原密码，要改为的密码，
     #  要求先改名，此时不检验密码是否正确，再改密码，此时需要先确认原密码正确，再改密码，若要改为的密码为空，则不做修改
@@ -123,6 +124,7 @@ def setting_get_poster_pwd(id):
     rows = cursor.fetchall
     return rows[0][0]
 
+
 def user_get_order(id):
     # todo 获取用户的订单，返回一个数组，数组为订单信息，类似poster_get_order
     cursor = connection.cursor()
@@ -145,7 +147,25 @@ def user_get_order(id):
         list.append(dic)
     return list
 
+
 def user_change_info(id, rName, sPwd, rPwd):
     # todo 用户账号信息修改，参数为用户账号，用户要改为的名字，原密码，要改为的密码，
     #  要求先改名，此时不检验密码是否正确，再改密码，此时需要先确认原密码正确，再改密码，若要改为的密码为空，则不做修改
-    pass
+    cursor = connection.cursor()
+    sql = "update 用户信息表 set 用户_姓名='{}' where 用户_账号='{}'".format(rName, id)  # 改名
+    cursor.execute(sql)
+
+    if len(rPwd) == 0:  # 若要改为的密码为空，则直接返回True不做修改
+        return True
+    sql = "select * from 用户信息表 where 用户_密码 = '{}' ".format(sPwd)  # 验证原密码
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    if len(rows) == 0:  # 若原密码错误，返回False
+        return False
+
+    sql = "update 用户信息表 set 用户_密码= '{}'  where 用户_账号='{}'".format(rPwd, id)  # 修改密码
+    cursor.execute(sql)
+    return True  # 成功修改完密码后返回True
+
+
+pass
