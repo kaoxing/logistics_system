@@ -186,5 +186,5 @@ def map(request):
     ret_list = []
     id = data.get("user")
     pwd = data.get("pwd")
-    # ret_list = tls.user_get_order(id, pwd)
+    ret_list = tls.user_get_order(id, pwd)
     return JsonResponse({"data": ret_list})
