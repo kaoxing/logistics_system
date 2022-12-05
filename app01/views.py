@@ -94,7 +94,7 @@ def poster_index(request):
     if ope == "配送":
         order_num = data.get("订单编号")
         tls.poster_deliver(order_num)
-        return JsonResponse()
+        return redirect(local + "poster_index/")
     ret_list = []
     id = data.get("id")
     ret_list = tls.poster_get_order(id)

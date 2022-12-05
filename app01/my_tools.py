@@ -61,7 +61,7 @@ def poster_get_order(id):
     # todo 获取跑腿人员分配到的订单，返回一个数组，数组为订单信息
     cursor = connection.cursor()
     sql = "select * from order_poster_view where 配送_工号 = '{}'".format(id)
-    print(sql)
+    # print(sql)
     cursor.execute(sql)
     rows = cursor.fetchall()
     list = []
@@ -72,44 +72,57 @@ def poster_get_order(id):
             '驿站编号': row[3],
             "收件电话": row[4],
             '是否退货': row[5],
-            "是否签收": row[6],
-            '配送状态': row[7]
+            "是否签收": row[6]
         }
         list.append(dic)
     return list
 
 
-def poster_deliver(order_num):
+def c(order_num):
     # todo 订单配送,参数位订单编号，要求若配送状态为"还未配送"则更新为”正在配送“，若为”正在配送“则更新为“已经送达”
+    cursor = connection.cursor()
+    sql = "select 配送_状态 from 配送表 where 配送_订单编号 = '{}'".format(order_num)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    print(rows[0][0])
+    print("!!!")
+    if rows[0][0] == 'N':
+        sql = "update 配送表 set 配送_状态 = 'Y' where 配送_订单编号 = '{}'".format(order_num)
+        cursor.execute(sql)
+    elif rows[0][0] == 'Y':
+        sql = "update 配送表 set 配送_状态 = 'P' where 配送_订单编号 = '{}'".format(order_num)
+        cursor.execute(sql)
     pass
-
 
 def poster_change_info(id, rName, sPwd, rPwd):
     # todo 跑腿账号信息修改，参数为跑腿账号，跑腿要改为的名字，原密码，要改为的密码，
     #  要求先改名，此时不检验密码是否正确，再改密码，此时需要先确认原密码正确，再改密码，若要改为的密码为空，则不做修改
     cursor = connection.cursor()
-    sql = "UPDATE 跑腿人员信息表 SET 跑腿_姓名=rName WHERE 跑腿_工号='{}'".format(id)  # 改名
+    sql = ""  # 改名
     cursor.execute(sql)
-
     if len(rPwd) == 0:  # 若要改为的密码为空，则直接返回True不做修改
         return True
-    sql = "select * from 跑腿人员信息表 where 跑腿_账号='{}'".format(id) # 验证原密码
+    sql = ""  # 验证原密码
     cursor.execute(sql)
     rows = cursor.fetchall()
     if len(rows) == 0:  # 若原密码错误，返回False
         return False
-    sql = "UPDATE 跑腿人员信息表 SET 跑腿_密码=rPwd WHERE 跑腿_工号='{}'".format(id)  # 修改密码
+    sql = ""  # 修改密码
     cursor.execute(sql)
     return True  # 成功修改完密码后返回True
-
-id='pt2014001'
-rName='万东'
-sPwd='pt2014001'
-rPwd='pt2014100'
-poster_change_info(id, rName, sPwd, rPwd)
-
 
 
 def setting_get_poster_pwd(id):
     # todo 通过跑腿账号获取跑腿账号密码,要求返回获取到的密码
+    pass
+
+
+def user_get_order(id):
+    # todo 获取用户的订单，返回一个数组，数组为订单信息，类似poster_get_order
+    pass
+
+
+def user_change_info(id, rName, sPwd, rPwd):
+    # todo 用户账号信息修改，参数为用户账号，用户要改为的名字，原密码，要改为的密码，
+    #  要求先改名，此时不检验密码是否正确，再改密码，此时需要先确认原密码正确，再改密码，若要改为的密码为空，则不做修改
     pass
