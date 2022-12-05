@@ -114,3 +114,4 @@ def user_get_order(id):
 def user_change_info(id, rName, sPwd, rPwd):
     # todo 用户账号信息修改，参数为用户账号，用户要改为的名字，原密码，要改为的密码，
     #  要求先改名，此时不检验密码是否正确，再改密码，此时需要先确认原密码正确，再改密码，若要改为的密码为空，则不做修改
+    pass
