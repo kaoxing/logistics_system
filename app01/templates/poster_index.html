@@ -59,6 +59,11 @@
         label="是否签收"
         width="200">
       </el-table-column>
+        <el-table-column
+        prop="物流状态"
+        label="物流状态"
+        width="200">
+      </el-table-column>
         <el-table-column label="操作" prop="action" align="center">
           <div  slot-scope="scope">
             <el-button type="primary" @click="deliver(scope.$index, scope.row)">确认送到</el-button>
@@ -66,24 +71,6 @@
           </div>
         </el-table-column>
     </el-table>
-    <el-dialog
-    title="商品详细"
-    :visible.sync="dialogVisible"
-    width="50%"
-    :show-close="show">
-         <span>商品信息：</span>
-    <el-input type="textarea" v-model="goods_show"></el-input>
-         <span>商家信息：</span>
-         <el-input type="textarea" v-model="shopper_show"></el-input>
-        <span>商品图片:</span><br>
-        <el-image
-          :src="photo_url"
-          fit="fill">
-        </el-image>
-    <span slot="footer" class="dialog-footer">
-    <el-button type="primary" @click="closeDialog">确 定</el-button>
-    </span>
-    </el-dialog>
     <el-dialog
       title="地图"
       :visible.sync="dialogVisible1"
