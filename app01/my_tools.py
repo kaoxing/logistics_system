@@ -197,12 +197,75 @@ def setting_get_user_pwd(id):
 
 
 def manager_get_order():
+    cursor = connection.cursor()
+    sql = "select * from 订单表"
+    cursor.execute(sql)
+    print(sql)
+    rows = cursor.fetchall()
+    print(rows)
+    list = []
+    for row in rows:
+        dic = {
+            "订单编号": row[0],
+            "购买账号": row[1],
+            '物品名称': row[2],
+            "物品数量": row[3],
+            '是否退货': row[4],
+            "是否签收": row[5],
+            "驿站编号": row[6],
+            "收件电话": row[7]
+        }
+        list.append(dic)
+    return list
     pass
 
 
 def manager_get_poster():
+    cursor = connection.cursor()
+    sql = "select * from 跑腿人员信息表"
+    cursor.execute(sql)
+    print(sql)
+    rows = cursor.fetchall()
+    print(rows)
+    list = []
+    for row in rows:
+        dic = {
+            "工号": row[0],
+            "姓名": row[1],
+            "身份证号": row[2],
+            "电话": row[3],
+            "驿站编号": row[4]
+        }
+        list.append(dic)
+    return list
     pass
 
+def maneger_get_distribute():
+    cursor = connection.cursor()
+    sql = "select * from user_view"
+    cursor.execute(sql)
+    print(sql)
+    rows = cursor.fetchall()
+    print(rows)
+    list = []
+    for row in rows:
+        dic = {
+            "订单编号": row[0],
+            "用户账号": row[1],
+            '物品名称': row[3],
+            "物品数量": row[4],
+            '是否退货': row[5],
+            "是否签收": row[6],
+            "配送状态": row[7],
+            "负责跑腿人员": row[8],
+            "跑腿人员电话": row[9],
+            "驿站编号": row[10],
+            "驿站电话": row[11],
+            "驿站经度": row[12],
+            "驿站纬度": row[13],
+        }
+        list.append(dic)
+    return list
 
 def manager_update_order():
     pass
@@ -213,6 +276,7 @@ def manager_update_poster():
 
 
 def manager_delete_order(order_num):
+
     pass
 
 
