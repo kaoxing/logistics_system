@@ -147,32 +147,6 @@ def user_index(request):
     return JsonResponse({"data": ret_list})
 
 
-def user_setting(request):
-    """用户设置"""
-    if request.method == 'GET':
-        data = request.GET
-        id = data.get('id')
-        name = data.get('name')
-        pwd = data.get('pwd')
-        if id is None:
-            return redirect(local + "user_login/")
-        return render(request, "user_setting.html", {'name': name, 'id': id, 'pwd': pwd})
-    # 接收到修改请求
-    data = json.loads(request.body)
-    id = data.get('id')
-    rName = data.get('resultName')
-    sPwd = data.get('sourcePwd')
-    rPwd = data.get('resultPwd')
-    ans = [tls.user_change_info(id, rName, sPwd, rPwd), rName]
-    pwd = tls.setting_get_user_pwd(id)
-    if ans[0]:
-        pwd = coder.encode(pwd, id)
-        ans.append(pwd)
-        return JsonResponse({"data": ans})
-    pwd = coder.encode(pwd, id)
-    ans.append(pwd)
-    return JsonResponse({"data": ans})
-
 def map(request):
     if request.method == 'GET':
         return render(request, "map.html")

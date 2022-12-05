@@ -78,10 +78,21 @@ def poster_get_order(id):
     return list
 
 
-def poster_deliver(order_num):
+def c(order_num):
     # todo 订单配送,参数位订单编号，要求若配送状态为"还未配送"则更新为”正在配送“，若为”正在配送“则更新为“已经送达”
+    cursor = connection.cursor()
+    sql = "select 配送_状态 from 配送表 where 配送_订单编号 = '{}'".format(order_num)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    print(rows[0][0])
+    print("!!!")
+    if rows[0][0] == 'N':
+        sql = "update 配送表 set 配送_状态 = 'Y' where 配送_订单编号 = '{}'".format(order_num)
+        cursor.execute(sql)
+    elif rows[0][0] == 'Y':
+        sql = "update 配送表 set 配送_状态 = 'P' where 配送_订单编号 = '{}'".format(order_num)
+        cursor.execute(sql)
     pass
-
 
 def poster_change_info(id, rName, sPwd, rPwd):
     # todo 跑腿账号信息修改，参数为跑腿账号，跑腿要改为的名字，原密码，要改为的密码，
