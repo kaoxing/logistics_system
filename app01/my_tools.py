@@ -138,8 +138,13 @@ def user_get_order(id):
             "物品数量": row[4],
             '是否退货': row[5],
             "是否签收": row[6],
-            "驿站编号": row[7],
-            "收件电话": row[8]
+            "配送状态": row[7],
+            "负责跑腿人员": row[8],
+            "跑腿人员电话": row[9],
+            "驿站编号": row[10],
+            "驿站电话": row[11],
+            "驿站经度": row[12],
+            "驿站纬度": row[13],
         }
         list.append(dic)
     return list
