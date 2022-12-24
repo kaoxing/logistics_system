@@ -191,9 +191,8 @@ def setting_get_user_pwd(id):
     cursor = connection.cursor()
     sql = "select 用户_密码 from 用户信息表 where 用户_账号 = '{}'".format(id)
     cursor.execute(sql)
-    rows = cursor.fetchall
+    rows = cursor.fetchall()
     return rows[0][0]
-    pass
 
 
 def manager_get_order():
@@ -240,7 +239,8 @@ def manager_get_poster():
     return list
     pass
 
-def maneger_get_distribute():
+
+def manager_get_distribute():
     cursor = connection.cursor()
     sql = "select * from user_view"
     cursor.execute(sql)
@@ -267,6 +267,7 @@ def maneger_get_distribute():
         list.append(dic)
     return list
 
+
 def manager_update_order():
     pass
 
@@ -276,11 +277,15 @@ def manager_update_poster():
 
 
 def manager_delete_order(order_num):
-
     pass
 
 
 def manager_delete_poster(poster_num):
     pass
+
+
+def manager_exist(id,pwd):
+    # todo 管理存在
+    return "123"
 
 
