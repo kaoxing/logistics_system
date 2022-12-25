@@ -31,7 +31,6 @@ def user_login(request):
     id = data.get("user")
     pwd = data.get("pwd")
     name = tls.user_exist(id, pwd)
-    pwd = coder.encode(pwd, id)
     user_data.extend([id, pwd, name, False])
     if name is not None:
         user_data[1] = coder.encode(pwd, id)
@@ -51,7 +50,6 @@ def poster_login(request):
     id = data.get("user")
     pwd = data.get("pwd")
     name = tls.poster_exist(id, pwd)
-    pwd = coder.encode(pwd, id)
     user_data.extend([id, pwd, name, False])
     if name is not None:
         user_data[1] = coder.encode(pwd, id)
@@ -70,7 +68,6 @@ def manager_login(request):
     id = data.get("user")
     pwd = data.get("pwd")
     name = tls.manager_exist(id, pwd)
-    pwd = coder.encode(pwd, id)
     user_data.extend([id, pwd, name, False])
     if name is not None:
         user_data[1] = coder.encode(pwd, id)
@@ -185,28 +182,6 @@ def user_setting(request):
     return JsonResponse({"data": ans})
 
 
-def manager_order(request):
-    """后台订单"""
-    if request.method == 'GET':
-        data = request.GET
-        id = data.get('id')
-        name = data.get('name')
-        pwd = data.get('pwd')
-        if id is None:
-            return redirect(local + "manager_login/")
-        return render(request, "manager_poster.html", {'name': name, 'id': id, 'pwd': pwd})
-    # 接收到请求
-    data = json.loads(request.body)
-    ret_list = []
-    id = data.get("id")
-    pwd = data.get("pwd")
-    if tls.manager_exist(id, pwd) is None:
-        return redirect(local + "manager_login/")
-    ret_list = tls.manager_get_order()
-    print(ret_list)
-    return JsonResponse({"data": ret_list})
-
-
 def manager_distribute(request):
     """后台分配"""
     if request.method == 'GET':
@@ -216,18 +191,25 @@ def manager_distribute(request):
         pwd = data.get('pwd')
         if id is None:
             return redirect(local + "manager_login/")
-        return render(request, "manager_distribute.html", {'name': name, 'id': id, 'pwd': pwd})
+        order_list = tls.manager_get_distribute()
+        return render(request, "manager_distribute.html",
+                      {'name': name, 'id': id, 'pwd': pwd, 'List': json.dumps(order_list)})
     # 接收到请求
     data = json.loads(request.body)
     ret_list = []
     id = data.get("id")
     pwd = data.get("pwd")
+    pwd = coder.decode(pwd, id)
     ope = data.get("ope")
+    name = data.get('name')
+    order_num = data.get("order_num")
     if tls.manager_exist(id, pwd) is None:
         return redirect(local + "manager_login/")
-    ret_list = tls.manager_get_distribute()
-    print(ret_list)
-    return JsonResponse({"data": ret_list})
+    if ope == "退货":
+        tls.manager_refund(order_num)
+    elif ope == "分配":
+        tls.manager_distribute()
+    return JsonResponse({"data": None})
 
 
 def manager_poster(request):
@@ -239,17 +221,28 @@ def manager_poster(request):
         pwd = data.get('pwd')
         if id is None:
             return redirect(local + "manager_login/")
-        return render(request, "manager_order.html", {'name': name, 'id': id, 'pwd': pwd})
+        poster_list = tls.manager_get_poster()
+        return render(request, "manager_poster.html",
+                      {'name': name, 'id': id, 'pwd': pwd, 'List': json.dumps(poster_list)})
     # 接收到请求
     data = json.loads(request.body)
-    ret_list = []
     id = data.get("id")
     pwd = data.get("pwd")
+    ope = data.get("ope")
+    poster_num = data.get("poster_num")
+    pwd = coder.decode(pwd, id)
     if tls.manager_exist(id, pwd) is None:
         return redirect(local + "manager_login/")
-    ret_list = tls.manager_get_poster()
-    print(ret_list)
-    return JsonResponse({"data": ret_list})
+    if ope == "删除":
+        tls.manager_delete_poster(poster_num)
+    if ope == "新增":
+        PNum = data.get("PNum")
+        PId = data.get("PId")
+        PCall = data.get("PCall")
+        PMail = data.get("PMail")
+        PName = data.get("PName")
+        tls.manager_new_poster(PNum, PName, PId, PCall, PMail)
+    return JsonResponse({"data": None})
 
 
 def map(request):

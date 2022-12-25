@@ -96,7 +96,6 @@ def poster_deliver(order_num):
     elif rows[0][0] == 'Y':
         sql = "update 配送表 set 配送_状态 = 'P' where 配送_订单编号 = '{}'".format(order_num)
         cursor.execute(sql)
-    pass
 
 
 def poster_change_info(id, rName, sPwd, rPwd):
@@ -230,12 +229,13 @@ def manager_get_order():
 
 
 def manager_get_poster():
+    # todo 可以加一点驿站信息
     cursor = connection.cursor()
     sql = "select * from 跑腿人员信息表"
     cursor.execute(sql)
-    print(sql)
+    # print(sql)
     rows = cursor.fetchall()
-    print(rows)
+    # print(rows)
     list = []
     for row in rows:
         dic = {
@@ -272,17 +272,10 @@ def manager_get_distribute():
             "驿站电话": row[11],
             "驿站经度": row[12],
             "驿站纬度": row[13],
+            "是否分配": row[14],
         }
         list.append(dic)
     return list
-
-
-def manager_update_order():
-    pass
-
-
-def manager_update_poster():
-    pass
 
 
 def manager_delete_order(order_id):
@@ -308,8 +301,7 @@ def manager_delete_poster(poster_id):
         cursor.execute(sql2)  # 执行sql
         return True
     else:
-        return None # 跑腿不存在
-
+        return None  # 跑腿不存在
 
 
 def manager_exist(id, pwd):
@@ -317,10 +309,26 @@ def manager_exist(id, pwd):
     cursor = connection.cursor()
     sql = "select * from 管理员 where 管理员_账号='{}'".format(id)  # sql语句
     cursor.execute(sql)  # 执行sql
+    print(sql)
     rows = cursor.fetchall()  # 获取执行结果rows
-    print(rows)
+    print(rows[0][1],pwd)
+    print(rows[0][1] == pwd)
     if len(rows) != 0 and rows[0][1] == pwd:
         str = rows[0][2].rstrip()  # 去除串结尾空格
         return str
     return None
 
+
+def manager_refund(order_num):
+    # todo 退货,参数位订单编号，将是否退货修改即可
+    pass
+
+
+def manager_distribute():
+    # todo 对所有未分配订单进行分配
+    pass
+
+
+def manager_new_poster(PNum, PName, PId, PCall, PMail):
+    # todo 新增跑腿人员,参数为工号，名字，身份证号，电话，驿站
+    pass

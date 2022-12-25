@@ -23,8 +23,8 @@
     </div>
     <br>
     <div style="text-align:center">
-        <el-button type="success" @click="myRefresh" style="width:30%;margin-bottom:15px;">
-            刷   新   订   单
+        <el-button type="success" @click="showNew" style="width:30%;margin-bottom:15px;">
+            新   增   跑   腿
         </el-button>
     </div>
     <br>
@@ -35,86 +35,103 @@
         width="100">
       </el-table-column>
       <el-table-column
-        prop="驿站编号"
-        label="驿站编号"
-        width="200">
+        prop="工号"
+        label="工号"
+        width="300">
       </el-table-column>
       <el-table-column
-        prop="订单编号"
-        label="订单编号"
-        width="200">
+        prop="姓名"
+        label="姓名"
+        width="300">
       </el-table-column>
         <el-table-column
-        prop="收件电话"
-        label="收件电话"
-        width="200">
+        prop="身份证号"
+        label="身份证号"
+        width="300">
       </el-table-column>
         <el-table-column
-        prop="是否退货"
-        label="是否退货"
-        width="200">
+        prop="电话"
+        label="电话"
+        width="300">
       </el-table-column>
         <el-table-column
-        prop="是否签收"
-        label="是否签收"
-        width="200">
-      </el-table-column>
-        <el-table-column
-        prop="物流状态"
-        label="物流状态"
-        width="200">
+        prop="驿站编号"
+        label="驿站编号"
+        width="300">
       </el-table-column>
         <el-table-column label="操作" prop="action" align="center">
           <div  slot-scope="scope">
-            <el-button type="primary" @click="deliver(scope.$index, scope.row)">确认送到</el-button>
-              <el-button type="primary" @click="showMap(scope.$index, scope.row)">查看配送地点</el-button>
+            <el-button type="primary" @click="deletef(scope.$index, scope.row)">删除</el-button>
           </div>
         </el-table-column>
     </el-table>
     <el-dialog
-      title="地图"
-      :visible.sync="dialogVisible1"
-      width="30%">
-        <div id="l-map" style="height: 600px"></div>
+    title="商品信息"
+    :visible.sync="dialogVisible1"
+    width="30%"
+    :show-close="show1">
+    <el-form ref="form" label-width="80px">
+  <el-form-item label="工号">
+    <el-input  maxlength="10" type="text" v-model="PNum"></el-input>
+  </el-form-item>
+    <el-form-item label="姓名">
+    <el-input  maxlength="20" type="text" v-model="PName"></el-input>
+  </el-form-item>
+    <el-form-item label="身份证号">
+    <el-input  maxlength="18" type="text" v-model="PId"></el-input>
+  </el-form-item>
+    <el-form-item label="电话">
+    <el-input  maxlength="20" type="text" v-model="PCall"></el-input>
+  </el-form-item>
+    <el-form-item label="驿站编号">
+    <el-input  maxlength="10" type="text" v-model="PMail"></el-input>
+  </el-form-item>
+</el-form>
+    <span slot="footer" class="dialog-footer">
+        <el-button @click="closeDialog1">取 消</el-button>
+    <el-button @click="newPoster">确 定</el-button>
+    </span>
     </el-dialog>
-
 </div>
 <script>
-    let table=[];
+    let table={{ List|safe }};
     let load={
         info:"",
         ope:"",
         id:"{{id}}",
-        goods_num:"",
+        pwd:"{{ pwd }}",
+        poster_num:"",
+        PNum:"",
+        PName:"",
+        PCall:"",
+        PMail:"",
+        PId:"",
     };
-    let evaTable=[]
-    const local="http://localhost:8000/";
-    let temp;
-    let user_msg={name:"{{name}}",id:"{{id}}",pwd:"{{pwd}}"};
+    const local="/";
     let search=new Vue({
         el:"#app",
         data:{
             dataTable:table,
-            evaluationTable:evaTable,
             dialogVisible: false,
-            goods_show:"",
-            shopper_show:"",
-            photo_url:"",
-            show:false,
+            show1:true,
             dialogVisible1: false,
+            PNum:"",
+            PName:"",
+            PCall:"",
+            PMail:"",
+            PId:"",
         },
         methods:{
-            closeDialog:function(){
-                this.dialogVisible = false;
+            closeDialog1:function(){
+                this.dialogVisible1 = false;
             },
-            deliver:function (index,row){
-                if(row.是否退货 == 'Y' || row.是否签收 == 'Y'){
-                    alert("当前无法执行此操作")
-                    return;
-                }
-                load.ope = "配送";
-                load.订单编号 = row.订单编号;
-                fetch("/poster_index/?name={{name}}&id={{id}}&pwd={{pwd}}", {
+            showNew:function (){
+                this.dialogVisible1 = true;
+            },
+            deletef:function (index,row){
+                load.ope = "删除";
+                load.poster_num = row.工号;
+                fetch("/manager_poster/?name={{name}}&id={{id}}&pwd={{pwd}}", {
                     method: 'POST',
                     mode: 'cors',
                     headers: {
@@ -123,53 +140,37 @@
                     body: JSON.stringify(load)
                     }).then(function(response) {
                         // let url = 'http://localhost:8000/setting/?name='+this.name+'&id={{id}}'+'&pwd='+this.resultPwd;
-                        window.location.replace("/poster_index/?name={{name}}&id={{id}}&pwd={{pwd}}")
+                        window.location.replace("/manager_poster/?name={{name}}&id={{id}}&pwd={{pwd}}")
                     }).catch(function(err) {
                         // 出错了;
                     });
             },
-            myRefresh:function(){
-                let fresh_url = "/poster_index/?name={{name}}&id={{id}}&pwd={{pwd}}";
-                console.log(load);
-                fetch(fresh_url, {
-                        method: 'POST',
-                        mode:'cors',
-                        headers: {
-                            'Content-Type': 'application/json',
-                          },
-                        body:JSON.stringify(load)
+            newPoster:function (){
+                load.ope = "新增";
+                load.PNum = this.PNum;
+                load.PId = this.PId;
+                load.PCall = this.PCall;
+                load.PMail = this.PMail;
+                load.PName = this.PName;
+                fetch("/manager_poster/?name={{name}}&id={{id}}&pwd={{pwd}}", {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(load)
                     }).then(function(response) {
-                        return response.json();
-                    }).then(function(responseJson) {
-                        temp=responseJson.data;
-                        table.splice(0,table.length);
-                        let i = 0;
-                        for(;i<temp.length;i++){
-                            table.push(temp[i]);
-                            // console.log(temp[i]);
-                        }
+                        // let url = 'http://localhost:8000/setting/?name='+this.name+'&id={{id}}'+'&pwd='+this.resultPwd;
+                        window.location.replace("/manager_poster/?name={{name}}&id={{id}}&pwd={{pwd}}")
+                    }).catch(function(err) {
+                        // 出错了;
                     });
             },
-            showMap:function(index,row){
-                this.dialogVisible1 = true;
-                setTimeout(() => {
-                    this.baiduMap()
-                }, 0);
-            },
-            baiduMap(){
-                let map = new BMap.Map("l-map");
-                map.enableScrollWheelZoom(); //启用滚轮放大缩小，默认禁用
-                map.enableContinuousZoom(); //启用地图惯性拖拽，默认禁用
-                let point = new BMap.Point(116.404, 39.915);
-                map.centerAndZoom(point, 15);
-                let marker = new BMap.Marker(point);        // 创建标注
-                map.addOverlay(marker);
-            },
             goLogin:function(){
-                window.location.replace('/poster_login/')
+                window.location.replace('/manager_login/')
             },
-            goSetting:function(){
-                window.location.replace("/poster_setting/?name={{name}}&id={{id}}&pwd={{pwd}}");
+            goDistribute:function(){
+                window.location.replace("/manager_distribute/?name={{name}}&id={{id}}&pwd={{pwd}}");
             },
 
         }

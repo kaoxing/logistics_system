@@ -70,6 +70,11 @@
         width="150">
       </el-table-column>
         <el-table-column
+        prop="驿站地址"
+        label="驿站地址"
+        width="150">
+      </el-table-column>
+        <el-table-column
         prop="驿站经度"
         label="驿站经度"
         width="0"
@@ -170,14 +175,14 @@
             showMap:function(index,row){
                 this.dialogVisible1 = true;
                 setTimeout(() => {
-                    this.baiduMap()
+                    this.baiduMap(row["驿站经度"],row["驿站纬度"])
                 }, 0);
             },
-            baiduMap(){
+            baiduMap(x,y){
                 let map = new BMap.Map("l-map");
                 map.enableScrollWheelZoom(); //启用滚轮放大缩小，默认禁用
                 map.enableContinuousZoom(); //启用地图惯性拖拽，默认禁用
-                let point = new BMap.Point(116.404, 39.915);
+                let point = new BMap.Point(x,y);
                 map.centerAndZoom(point, 15);
                 let marker = new BMap.Marker(point);        // 创建标注
                 map.addOverlay(marker);
