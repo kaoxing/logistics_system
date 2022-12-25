@@ -61,6 +61,9 @@
                 load.resultName = this.name;
                 load.sourcePwd = this.sourcePwd;
                 load.resultPwd = this.resultPwd;
+                if(load.resultPwd.length!=9 && load.resultPwd.length!=0 ){
+                    alert("密码长度最长为9位");
+                }
                 fetch('/poster_setting/', {
                     method: 'POST',
                     mode: 'cors',
@@ -78,7 +81,7 @@
                         alert("修改成功")
                         window.location.replace(url)
                     }else{
-                        url =local + "setting/" + "?id=" + '{{id}}' + "&name=" + data[1] + "&pwd=" + data[2];
+                        url =local + "poster_setting/" + "?id=" + '{{id}}' + "&name=" + data[1] + "&pwd=" + data[2];
                         alert("密码错误，修改失败")
                         window.location.replace(url)
                     }

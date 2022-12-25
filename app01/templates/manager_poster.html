@@ -8,6 +8,12 @@
 <body>
 <script src="{% static '/js/vue.js'%}"></script>
 <script src="{% static '/js/element-ui/lib/index.js'%}"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+		body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+	</style>
+	<script type="text/javascript" src="//api.map.baidu.com/api?v=3.0&ak=1R0nWQNYAZyApzIg8IwgeRUxIpA5KsW9"></script>
 <link rel="stylesheet" href="{% static '/js/element-ui/lib/theme-chalk/index.css'%}">
 <div id="app">
     <div  style="text-align:right">
@@ -61,6 +67,7 @@
         <el-table-column label="操作" prop="action" align="center">
           <div  slot-scope="scope">
             <el-button type="primary" @click="deliver(scope.$index, scope.row)">确认送到</el-button>
+              <el-button type="primary" @click="showMap(scope.$index, scope.row)">查看配送地点</el-button>
           </div>
         </el-table-column>
     </el-table>
@@ -83,7 +90,7 @@
     let evaTable=[]
     const local="http://localhost:8000/";
     let temp;
-    let user_msg={name:"{{name}}",id:"{{id}}"};
+    let user_msg={name:"{{name}}",id:"{{id}}",pwd:"{{pwd}}"};
     let search=new Vue({
         el:"#app",
         data:{

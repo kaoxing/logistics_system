@@ -3,135 +3,262 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>主页</title>
+    <title>商品管理</title>
 </head>
 <body>
 <script src="{% static '/js/vue.js'%}"></script>
 <script src="{% static '/js/element-ui/lib/index.js'%}"></script>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-	<style type="text/css">
-		body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
-	</style>
-	<script type="text/javascript" src="//api.map.baidu.com/api?v=3.0&ak=1R0nWQNYAZyApzIg8IwgeRUxIpA5KsW9"></script>
 <link rel="stylesheet" href="{% static '/js/element-ui/lib/theme-chalk/index.css'%}">
 <div id="app">
     <div  style="text-align:right">
-        <span>---欢迎您，{{name}}---</span>
-        <el-button type="primary" @click="goSetting">账号设置</el-button>
-        <el-button type="danger" @click="goLogin">退出账号</el-button>
+        <span>---欢迎您：{{name}}---</span>
+        <el-button type="danger" @click="goDistribute">订单分配</el-button>
+        <el-button type="danger" @click="goOrder">订单管理</el-button>
     </div>
     <br>
-    <div style="text-align:center">
-        <el-button type="success" @click="myRefresh" style="width:30%;margin-bottom:15px;">
-            刷   新   订   单
-        </el-button>
-    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
     <br>
     <el-table
       :data="dataTable"
       style="width: 100%">
-        <el-table-column
-        width="100">
-      </el-table-column>
-      <el-table-column
-        prop="驿站编号"
-        label="驿站编号"
-        width="200">
-      </el-table-column>
       <el-table-column
         prop="订单编号"
         label="订单编号"
-        width="200">
+        width="190">
+      </el-table-column>
+      <el-table-column
+        prop="购买账号"
+        label="购买账号"
+        width="190">
       </el-table-column>
         <el-table-column
-        prop="收件电话"
-        label="收件电话"
-        width="200">
+        prop="物品名称"
+        label="物品名称"
+        width="190">
+      </el-table-column>
+        <el-table-column
+        prop="物品数量"
+        label="物品数量"
+        width="190">
       </el-table-column>
         <el-table-column
         prop="是否退货"
         label="是否退货"
-        width="200">
+        width="190">
       </el-table-column>
         <el-table-column
         prop="是否签收"
         label="是否签收"
-        width="200">
+        width="320">
       </el-table-column>
         <el-table-column
-        prop="物流状态"
-        label="物流状态"
-        width="200">
+        prop="驿站编号"
+        label="驿站编号"
+        width="320">
+      </el-table-column>
+        <el-table-column
+        prop="收件电话"
+        label="收件电话"
+        width="320">
       </el-table-column>
         <el-table-column label="操作" prop="action" align="center">
           <div  slot-scope="scope">
-            <el-button type="primary" @click="deliver(scope.$index, scope.row)">确认送到</el-button>
-              <el-button type="primary" @click="showMap(scope.$index, scope.row)">查看配送地点</el-button>
+              <el-button type="primary" @click="setDialog1(scope.row)">修改</el-button>
+              <el-button type="danger" @click="deletef(scope.$index, scope.row)">删除</el-button>
           </div>
         </el-table-column>
     </el-table>
+    <br>
+    <div style="text-align:center">
+        <el-button type="success" @click="setDialog1('1')">新增</el-button>
+    </div>
+
     <el-dialog
-      title="地图"
-      :visible.sync="dialogVisible1"
-      width="30%">
-        <div id="l-map" style="height: 600px"></div>
+    title="商品信息"
+    :visible.sync="dialogVisible1"
+    width="30%"
+    :show-close="show1">
+    <el-form ref="form" label-width="80px">
+  <el-form-item label="商品名称">
+    <el-input maxlength="10" type="text" v-model="Gname"></el-input>
+  </el-form-item>
+    <el-form-item label="商品价格">
+    <el-input oninput="if(value.length > 6) value = value.slice(0,8)" type="number" v-model="Gprice"></el-input>
+  </el-form-item>
+    <el-form-item label="库存数量">
+    <el-input oninput="if(value.length > 6) value = value.slice(0,8)" type="number" v-model="Gnumber"></el-input>
+  </el-form-item>
+    <el-form-item label="商品描述">
+    <el-input maxlength="100" type="textarea" v-model="Gdes"></el-input>
+  </el-form-item>
+    <el-form-item label="商品照片">
+    <input type="file" id="photo" accept="image/png, image/jpeg, image/jpg" @change="preview(this)">
+      <span style="display:inline-block;width:100px;height:100px;background:#e0e0e0;">
+        <img :src="Gphoto" alt="照片" id="GImg" style="width:100%;height:100%">
+      </span>
+  </el-form-item>
+</el-form>
+    <span slot="footer" class="dialog-footer">
+        <el-button @click="cancel1">取 消</el-button>
+    <el-button @click="putaway">确 定</el-button>
+    </span>
     </el-dialog>
 
 </div>
 <script>
-    let table=[];
+    let i,j;
+    let table={{ List|safe }};
+    id = "{{id}}";
+    const local = "http://localhost:8000/"
+    // const local = "http://121.36.195.125:8000/"
+    let evaTable = []
     let load={
-        info:"",
-        ope:"",
         id:"{{id}}",
         goods_num:"",
-    };
-    let evaTable=[]
-    const local="http://localhost:8000/";
-    let temp;
-    let user_msg={name:"{{name}}",id:"{{id}}",pwd:"{{pwd}}"};
-    let search=new Vue({
+        goods_number:"",
+        order_address:"",
+        ope:"",
+        way:"",
+    }
+    let pack={
+        id:"{{id}}",
+        goods_name:"",
+        goods_number:"",
+        goods_price:"",
+        goods_description:"",
+        goods_photo:"1",
+        ope:"",
+        goods_num:""
+    }
+    new Vue({
         el:"#app",
-        data:{
-            dataTable:table,
-            evaluationTable:evaTable,
-            dialogVisible: false,
-            goods_show:"",
-            shopper_show:"",
-            photo_url:"",
-            show:false,
+        data: {
+            // checked:false,
+            dataTable: table,
+            evaluationTable: evaTable,
+            input:"",
             dialogVisible1: false,
+            dialogVisible2: false,
+            dialogVisible3: false,
+            number:"",
+            add:"",
+            show:true,
+            show1:false,
+            show2:false,
+            n:0,
+            Gname:'',
+            Gnumber:'',
+            Gprice:'',
+            Gdes:"",
+            Gphoto:"",
+            photo_url:'',
+            Gnum:"",
         },
         methods:{
-            closeDialog:function(){
-                this.dialogVisible = false;
-            },
-            deliver:function (index,row){
-                if(row.是否退货 == 'Y' || row.是否签收 == 'Y'){
-                    alert("当前无法执行此操作")
-                    return;
-                }
-                load.ope = "配送";
-                load.订单编号 = row.订单编号;
-                fetch("/poster_index/?name={{name}}&id={{id}}&pwd={{pwd}}", {
-                    method: 'POST',
-                    mode: 'cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(load)
+            goIndex:function(){
+                let index_url = local+'sindex/?name={{name}}&id={{id}}&pwd={{pwd}}';
+                fetch(index_url, {
+                        method: 'GET',
                     }).then(function(response) {
-                        // let url = 'http://localhost:8000/setting/?name='+this.name+'&id={{id}}'+'&pwd='+this.resultPwd;
-                        window.location.replace("/poster_index/?name={{name}}&id={{id}}&pwd={{pwd}}")
+                        // console.log(response)
+                        window.location.replace(index_url)
                     }).catch(function(err) {
-                        // 出错了;
+                        // 出错了;等价于 then 的第二个参数,但这样更好用更直观 :(
                     });
             },
-            myRefresh:function(){
-                let fresh_url = "/poster_index/?name={{name}}&id={{id}}&pwd={{pwd}}";
-                console.log(load);
-                fetch(fresh_url, {
+            preview(){
+                let fr=new FileReader();
+                let photo=document.getElementById('photo').files[0];
+                if(typeof photo == 'object') {
+                    fr.readAsDataURL(photo);
+                    fr.onload = function (e) {
+                        document.getElementById('GImg').src = this.result;
+                        console.log(typeof this.result);
+                        pack.goods_photo=this.result;
+                    }
+                }
+            },
+            putaway:function (){
+                //上架商品
+                if(this.Gname == ""||this.Gnumber == ""||this.Gprice == ""||this.Gdes == ""||typeof pack.goods_photo == 'undefined'){
+                    alert("请正确填写全部信息！");
+                    return;
+                }
+                pack.goods_name=this.Gname;
+                pack.goods_number=this.Gnumber;
+                pack.goods_price=this.Gprice;
+                pack.goods_description=this.Gdes;
+                pack.goods_num=this.Gnum;
+                fetch(local+'mgood/?name={{name}}&id={{id}}&pwd={{pwd}}', {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(pack)
+                }).then(function(response) {
+                    // let url = 'http://localhost:8000/setting/?name='+this.name+'&id={{id}}'+'&pwd='+this.resultPwd;
+                    window.location.replace(local+'mgood/?name={{name}}&id={{id}}&pwd={{pwd}}')
+                }).catch(function(err) {
+                    // 出错了;等价于 then 的第二个参数,但这样更好用更直观 :(
+                });
+
+            },
+            deletef:function (index,row){
+                load.ope = "下架";
+                load.goods_num = row.goods_num;
+                fetch(local+'mgood/?name={{name}}&id={{id}}&pwd={{pwd}}', {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(load)
+                }).then(function(response) {
+                    // let url = 'http://localhost:8000/setting/?name='+this.name+'&id={{id}}'+'&pwd='+this.resultPwd;
+                    window.location.replace(local+'mgood/?name={{name}}&id={{id}}&pwd={{pwd}}')
+                }).catch(function(err) {
+                    // 出错了;等价于 then 的第二个参数,但这样更好用更直观 :(
+                });
+            },
+            setDialog1:function(row){
+                this.dialogVisible1 = true;
+                pack.ope = '上架';
+                if(row != '1'){
+                    this.Gname = row.goods_name;
+                    this.Gnumber = row.inventory_number;
+                    temp = row.goods_price.slice(1);
+                    temp = temp.replaceAll(",","");
+                    this.Gprice = temp;
+                    this.Gdes = row.goods_description;
+                    this.Gphoto = row.goods_photo;
+                    this.Gnum = row.goods_num;
+                    pack.ope = '修改';
+                }
+            },
+            cancel1:function (){
+                this.dialogVisible1 = false;
+                // console.log(this.diaglogVisible)
+            },
+            setDialog2:function(row){
+                this.dialogVisible2 = true;
+                this.photo_url = row.goods_photo;
+                // console.log(this.photo_url)
+            },
+            cancel2:function (){
+                this.dialogVisible2 = false;
+                // console.log(this.diaglogVisible)
+            },
+            getComment:function(index,row){
+                load.way = "查看评论";
+                load.goods_num = row.goods_num;
+                let sear_url = local+"sindex/?name={{name}}&id={{id}}&pwd={{pwd}}";
+                this.dialogVisible3 = true;
+                fetch(sear_url, {
                         method: 'POST',
                         mode:'cors',
                         headers: {
@@ -142,38 +269,20 @@
                         return response.json();
                     }).then(function(responseJson) {
                         temp=responseJson.data;
-                        table.splice(0,table.length);
+                        evaTable.splice(0,evaTable.length);
                         let i = 0;
                         for(;i<temp.length;i++){
-                            table.push(temp[i]);
+                            evaTable.push(temp[i]);
                             // console.log(temp[i]);
                         }
                     });
             },
-            showMap:function(index,row){
-                this.dialogVisible1 = true;
-                setTimeout(() => {
-                    this.baiduMap()
-                }, 0);
+            cancel3:function (){
+                this.dialogVisible3 = false;
+                // console.log(this.diaglogVisible)
             },
-            baiduMap(){
-                let map = new BMap.Map("l-map");
-                map.enableScrollWheelZoom(); //启用滚轮放大缩小，默认禁用
-                map.enableContinuousZoom(); //启用地图惯性拖拽，默认禁用
-                let point = new BMap.Point(116.404, 39.915);
-                map.centerAndZoom(point, 15);
-                let marker = new BMap.Marker(point);        // 创建标注
-                map.addOverlay(marker);
-            },
-            goLogin:function(){
-                window.location.replace('/poster_login/')
-            },
-            goSetting:function(){
-                window.location.replace("/poster_setting/?name={{name}}&id={{id}}&pwd={{pwd}}");
-            },
-
-        }
-    })
+     }
+ });
 </script>
 </body>
 </html>

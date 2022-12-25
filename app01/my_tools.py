@@ -120,7 +120,7 @@ def setting_get_poster_pwd(id):
     cursor = connection.cursor()
     sql = "select 跑腿_密码 from 跑腿人员信息表 where 跑腿_账号 = '{}'".format(id)
     cursor.execute(sql)
-    rows = cursor.fetchall
+    rows = cursor.fetchall()
     return rows[0][0]
 
 

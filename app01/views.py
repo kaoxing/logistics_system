@@ -120,6 +120,7 @@ def poster_setting(request):
     rPwd = data.get('resultPwd')
     ans = [tls.poster_change_info(id, rName, sPwd, rPwd), rName]
     pwd = tls.setting_get_poster_pwd(id)
+    print("here")
     if ans[0]:
         pwd = coder.encode(pwd, id)
         ans.append(pwd)
@@ -193,7 +194,7 @@ def manager_order(request):
         pwd = data.get('pwd')
         if id is None:
             return redirect(local + "manager_login/")
-        return render(request, "manager_order.html", {'name': name, 'id': id, 'pwd': pwd})
+        return render(request, "manager_poster.html", {'name': name, 'id': id, 'pwd': pwd})
     # 接收到请求
     data = json.loads(request.body)
     ret_list = []
@@ -238,7 +239,7 @@ def manager_poster(request):
         pwd = data.get('pwd')
         if id is None:
             return redirect(local + "manager_login/")
-        return render(request, "manager_poster.html", {'name': name, 'id': id, 'pwd': pwd})
+        return render(request, "manager_order.html", {'name': name, 'id': id, 'pwd': pwd})
     # 接收到请求
     data = json.loads(request.body)
     ret_list = []
