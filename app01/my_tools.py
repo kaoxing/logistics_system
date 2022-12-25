@@ -129,9 +129,7 @@ def user_get_order(id):
     cursor = connection.cursor()
     sql = "select * from user_view where 账号 = '{}'".format(id)
     cursor.execute(sql)
-    print(sql)
     rows = cursor.fetchall()
-    print(rows)
     list = []
     for row in rows:
         dic = {
@@ -178,12 +176,23 @@ def user_receive(order_num):
     sql = "select 订单_是否签收 from 订单表 where 订单_编号 = '{}'".format(order_num)
     cursor.execute(sql)
     rows = cursor.fetchall()
-    print(rows[0][0])
-    print("!!!")
     if rows[0][0] == 'N':
         sql = "update 订单表 set 订单_是否签收 = 'Y' where 订单_编号 = '{}'".format(order_num)
         cursor.execute(sql)
-    pass
+
+
+def user_get_buyId(id):
+    cursor = connection.cursor()
+    sql = "select 用户_购买账号 from 用户信息表 where 用户_账号 = '{}'".format(id)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    return rows[0][0].rstrip()
+
+
+def user_change_buyId(id, buyId):
+    cursor = connection.cursor()
+    sql = "update 用户信息表 set 用户_购买账号= '{}'  where 用户_账号='{}'".format(buyId, id)
+    cursor.execute(sql)
 
 
 def setting_get_user_pwd(id):
@@ -216,7 +225,6 @@ def manager_get_order():
         }
         list.append(dic)
     return list
-    pass
 
 
 def manager_get_poster():
@@ -237,7 +245,6 @@ def manager_get_poster():
         }
         list.append(dic)
     return list
-    pass
 
 
 def manager_get_distribute():
@@ -284,8 +291,6 @@ def manager_delete_poster(poster_num):
     pass
 
 
-def manager_exist(id,pwd):
+def manager_exist(id, pwd):
     # todo 管理存在
     return "123"
-
-

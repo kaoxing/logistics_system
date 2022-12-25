@@ -35,6 +35,10 @@
         修改密码：<el-input type="password" placeholder="修改后的密码" style="width: 270px" v-model="resultPwd"></el-input>
     </div>
     <br>
+    <br><div style="text-align:center">
+        购买账号：<el-input type="text" placeholder="购买账号" style="width: 270px" v-model="buyId"></el-input>
+    </div>
+    <br>
     <br>
     <div style="text-align:center"><el-button type="primary" @click="reSet">确认修改</el-button></div>
 </div>
@@ -44,7 +48,8 @@
         id:"{{id}}",
         resultName:"",
         sourcePwd:"",
-        resultPwd:""
+        resultPwd:"",
+        buyId:""
     }
     const local = "/";
     let setting=new Vue({
@@ -55,13 +60,15 @@
             name:"{{name}}",
             sourcePwd:"",
             resultPwd:"",
+            buyId:"{{buyId}}",
         },
         methods: {
             reSet: function () {
                 load.resultName = this.name;
                 load.sourcePwd = this.sourcePwd;
                 load.resultPwd = this.resultPwd;
-                if(load.resultPwd.length!=9){
+                load.buyId = this.buyId;
+                if(load.resultPwd.length!=9 && load.resultPwd.length!=0 ){
                     alert("密码长度最长为9位");
                 }
                 fetch('/user_setting/', {

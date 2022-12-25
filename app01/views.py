@@ -147,8 +147,9 @@ def user_index(request):
     if ope == "收货":
         order_num = data.get("订单编号")
         tls.user_receive(order_num)
-        return redirect(local + "user_index/")
+        return JsonResponse({"data": "None"})
     ret_list = tls.user_get_order(id)
+    print(ret_list)
     return JsonResponse({"data": ret_list})
 
 
@@ -159,9 +160,10 @@ def user_setting(request):
         id = data.get('id')
         name = data.get('name')
         pwd = data.get('pwd')
+        buyId = tls.user_get_buyId(id)
         if id is None:
             return redirect(local + "user_login/")
-        return render(request, "user_setting.html", {'name': name, 'id': id, 'pwd': pwd})
+        return render(request, "user_setting.html", {'name': name, 'id': id, 'pwd': pwd, 'buyId': buyId})
     # 接收到修改请求
     data = json.loads(request.body)
     ret_list = []
@@ -169,6 +171,8 @@ def user_setting(request):
     rName = data.get('resultName')
     sPwd = data.get('sourcePwd')
     rPwd = data.get('resultPwd')
+    buyId = data.get("buyId")
+    tls.user_change_buyId(id, buyId)
     ans = [tls.user_change_info(id, rName, sPwd, rPwd), rName]
     pwd = tls.setting_get_user_pwd(id)
     if ans[0]:

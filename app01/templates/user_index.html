@@ -37,32 +37,59 @@
       <el-table-column
         prop="驿站编号"
         label="驿站编号"
-        width="200">
+        width="150">
       </el-table-column>
       <el-table-column
         prop="订单编号"
         label="订单编号"
-        width="200">
+        width="150">
       </el-table-column>
         <el-table-column
-        prop="收件电话"
-        label="收件电话"
-        width="200">
+        prop="物品数量"
+        label="物品数量"
+        width="150">
+      </el-table-column>
+        <el-table-column
+        prop="配送状态"
+        label="配送状态"
+        width="150">
+      </el-table-column>
+        <el-table-column
+        prop="负责跑腿人员"
+        label="负责跑腿人员"
+        width="150">
+      </el-table-column>
+        <el-table-column
+        prop="驿站编号"
+        label="驿站编号"
+        width="150">
+      </el-table-column>
+        <el-table-column
+        prop="驿站电话"
+        label="驿站电话"
+        width="150">
       </el-table-column>
         <el-table-column
         prop="是否退货"
         label="是否退货"
-        width="200">
+        width="150">
       </el-table-column>
         <el-table-column
         prop="是否签收"
         label="是否签收"
-        width="200">
+        width="150">
       </el-table-column>
         <el-table-column
-        prop="物流状态"
-        label="物流状态"
-        width="200">
+        prop="驿站经度"
+        label="驿站经度"
+        width="0"
+        v-if="false">
+      </el-table-column>
+        <el-table-column
+        prop="驿站纬度"
+        label="驿站经度"
+        width="0"
+        v-if="false">
       </el-table-column>
         <el-table-column label="操作" prop="action" align="center">
           <div  slot-scope="scope">
@@ -114,6 +141,7 @@
                 }
                 load.ope = "收货";
                 load.订单编号 = row.订单编号;
+                table.at(index)["是否签收"]="Y";
                 fetch("/user_index/?name={{name}}&id={{id}}&pwd={{pwd}}", {
                     method: 'POST',
                     mode: 'cors',
@@ -121,12 +149,8 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(load)
-                    }).then(function(response) {
-                        // let url = 'http://localhost:8000/setting/?name='+this.name+'&id={{id}}'+'&pwd='+this.resultPwd;
-                        window.location.replace("/user_index/?name={{name}}&id={{id}}&pwd={{pwd}}")
-                    }).catch(function(err) {
-                        // 出错了;
                     });
+
             },
             myRefresh:function(){
                 let fresh_url = "/user_index/?name={{name}}&id={{id}}&pwd={{pwd}}";
@@ -146,21 +170,23 @@
                         let i = 0;
                         for(;i<temp.length;i++){
                             table.push(temp[i]);
-                            // console.log(temp[i]);
+                            console.log(temp[i]);
                         }
                     });
             },
             showMap:function(index,row){
+                {#console.log(row);#}
                 this.dialogVisible1 = true;
                 setTimeout(() => {
-                    this.baiduMap()
+                    this.baiduMap(row["驿站经度"],row["驿站纬度"])
                 }, 0);
             },
-            baiduMap(){
+            baiduMap(x,y){
+                {#console.log(typeof x);#}
                 let map = new BMap.Map("l-map");
                 map.enableScrollWheelZoom(); //启用滚轮放大缩小，默认禁用
                 map.enableContinuousZoom(); //启用地图惯性拖拽，默认禁用
-                let point = new BMap.Point(116.404, 39.915);
+                let point = new BMap.Point(x, y);
                 map.centerAndZoom(point, 15);
                 let marker = new BMap.Marker(point);        // 创建标注
                 map.addOverlay(marker);
