@@ -285,12 +285,31 @@ def manager_update_poster():
     pass
 
 
-def manager_delete_order(order_num):
-    pass
+def manager_delete_order(order_id):
+    cursor = connection.cursor()
+    sql1 = "select * from 配送表 where 配送_订单编号='{}'".format(order_id)  # sql语句,查询此配送单是否存在
+    cursor.execute(sql1)  # 执行sql
+    rows = cursor.fetchall()  # 获取执行结果rows
+    if len(rows) != 0:
+        sql2 = "delete from 配送表 where 配送_订单编号='{}'".format(order_id)  # sql语句
+        cursor.execute(sql2)  # 执行sql
+        return True
+    else:
+        return None  # 订单不存在
 
 
-def manager_delete_poster(poster_num):
-    pass
+def manager_delete_poster(poster_id):
+    cursor = connection.cursor()
+    sql1 = "select * from 跑腿人员信息表 where 跑腿_工号='{}'".format(poster_id)  # sql语句,查询此跑腿是否存在
+    cursor.execute(sql1)  # 执行sql
+    rows = cursor.fetchall()  # 获取执行结果rows
+    if len(rows) != 0:
+        sql2 = "delete from 跑腿人员信息表 where 跑腿_工号='{}'".format(poster_id)  # sql语句
+        cursor.execute(sql2)  # 执行sql
+        return True
+    else:
+        return None # 跑腿不存在
+
 
 
 def manager_exist(id, pwd):
