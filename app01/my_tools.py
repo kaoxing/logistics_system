@@ -64,17 +64,19 @@ def poster_get_order(id):
     # print(sql)
     cursor.execute(sql)
     rows = cursor.fetchall()
-    print(rows)
     list = []
     for row in rows:
         dic = {
             "工号": row[0],
-            "订单编号": row[2],
-            '驿站编号': row[3],
-            "收件电话": row[4],
-            '是否退货': row[5],
-            "是否签收": row[6],
-            "物流状态": row[7],
+            "订单编号": row[2].rstrip(),
+            '驿站编号': row[3].rstrip(),
+            "收件电话": row[4].rstrip(),
+            '是否退货': row[5].rstrip(),
+            "是否签收": row[6].rstrip(),
+            "物流状态": row[7].rstrip(),
+            "驿站地址": row[8].rstrip(),
+            "驿站经度": row[9].rstrip(),
+            "驿站纬度": row[10].rstrip()
         }
         list.append(dic)
     return list
