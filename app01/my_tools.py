@@ -294,5 +294,14 @@ def manager_delete_poster(poster_num):
 
 
 def manager_exist(id, pwd):
-    # todo 管理存在
-    return "123"
+    # todo 管理员登录，返回为None则不存在，否则返回用户昵称
+    cursor = connection.cursor()
+    sql = "select * from 管理员 where 管理员_账号='{}'".format(id)  # sql语句
+    cursor.execute(sql)  # 执行sql
+    rows = cursor.fetchall()  # 获取执行结果rows
+    print(rows)
+    if len(rows) != 0 and rows[0][1] == pwd:
+        str = rows[0][2].rstrip()  # 去除串结尾空格
+        return str
+    return None
+
