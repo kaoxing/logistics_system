@@ -64,17 +64,19 @@ def poster_get_order(id):
     # print(sql)
     cursor.execute(sql)
     rows = cursor.fetchall()
-    print(rows)
     list = []
     for row in rows:
         dic = {
             "工号": row[0],
-            "订单编号": row[2],
-            '驿站编号': row[3],
-            "收件电话": row[4],
-            '是否退货': row[5],
-            "是否签收": row[6],
-            "物流状态": row[7],
+            "订单编号": row[2].rstrip(),
+            '驿站编号': row[3].rstrip(),
+            "收件电话": row[4].rstrip(),
+            '是否退货': row[5].rstrip(),
+            "是否签收": row[6].rstrip(),
+            "物流状态": row[7].rstrip(),
+            "驿站地址": row[8].rstrip(),
+            "驿站经度": row[9].rstrip(),
+            "驿站纬度": row[10].rstrip()
         }
         list.append(dic)
     return list
@@ -283,14 +285,42 @@ def manager_update_poster():
     pass
 
 
-def manager_delete_order(order_num):
-    pass
+def manager_delete_order(order_id):
+    cursor = connection.cursor()
+    sql1 = "select * from 配送表 where 配送_订单编号='{}'".format(order_id)  # sql语句,查询此配送单是否存在
+    cursor.execute(sql1)  # 执行sql
+    rows = cursor.fetchall()  # 获取执行结果rows
+    if len(rows) != 0:
+        sql2 = "delete from 配送表 where 配送_订单编号='{}'".format(order_id)  # sql语句
+        cursor.execute(sql2)  # 执行sql
+        return True
+    else:
+        return None  # 订单不存在
 
 
-def manager_delete_poster(poster_num):
-    pass
+def manager_delete_poster(poster_id):
+    cursor = connection.cursor()
+    sql1 = "select * from 跑腿人员信息表 where 跑腿_工号='{}'".format(poster_id)  # sql语句,查询此跑腿是否存在
+    cursor.execute(sql1)  # 执行sql
+    rows = cursor.fetchall()  # 获取执行结果rows
+    if len(rows) != 0:
+        sql2 = "delete from 跑腿人员信息表 where 跑腿_工号='{}'".format(poster_id)  # sql语句
+        cursor.execute(sql2)  # 执行sql
+        return True
+    else:
+        return None # 跑腿不存在
+
 
 
 def manager_exist(id, pwd):
-    # todo 管理存在
-    return "123"
+    # todo 管理员登录，返回为None则不存在，否则返回用户昵称
+    cursor = connection.cursor()
+    sql = "select * from 管理员 where 管理员_账号='{}'".format(id)  # sql语句
+    cursor.execute(sql)  # 执行sql
+    rows = cursor.fetchall()  # 获取执行结果rows
+    print(rows)
+    if len(rows) != 0 and rows[0][1] == pwd:
+        str = rows[0][2].rstrip()  # 去除串结尾空格
+        return str
+    return None
+
