@@ -348,8 +348,24 @@ def manager_new_poster(PNum, PName, PCardId, PCall, PMail,Pid,Ppsw):
 
 def manager_distribute():
     # todo 对所有未分配订单进行分配
-    pass
+    # cursor = connection.cursor()
+    # sql = "select * from order_poster_view where 订单_是否分配='N'"  # sql语句，此检验订单是否存在
+    # cursor.execute(sql)  # 执行sql
+    # rows = cursor.fetchall()  # 获取执行结果rows
+    # print(len(rows))
+    # if len(rows) != 0:
+    #    sql = "update 订单表 set 订单_是否分配='Y'" # sql语句,更新订单_是否分配='Y'
+    #    cursor.execute(sql)  # 执行sql
+    #    sql = "update order_poster_view set 订单_是否分配='Y'"  # sql语句,更新订单_是否分配='Y'
+    #    cursor.execute(sql)  # 执行sql
+    #    for i in range(len(rows)-1):
+    #        sql =  "insert into 配送表 values('{}','{}','{}')".format(rows[i][2].rstrip(),
+    #                                                               rows[i][0].rstrip(), rows[i][7].rstrip())    # sql语句
+    #        cursor.execute(sql)  # 执行sql
+    return
 
+
+# manager_distribute()
 
 def manager_modify_poster(PNum, PName, PCardId, PCall, PMail,Pid,Ppsw):
     # todo 修改跑腿人员信息,参数为工号，名字，身份证号，电话，驿站,账号,密码
