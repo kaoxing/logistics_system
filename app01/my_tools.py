@@ -333,11 +333,6 @@ def manager_refund(order_num):
         return None # 此订单不存在
 
 
-def manager_distribute():
-    # todo 对所有未分配订单进行分配
-    pass
-
-
 def manager_new_poster(PNum, PName, PCardId, PCall, PMail,Pid,Ppsw):
     # todo 新增跑腿人员,参数为工号，名字，身份证号，电话，驿站,跑腿账号,跑腿密码
     cursor = connection.cursor()
@@ -351,6 +346,10 @@ def manager_new_poster(PNum, PName, PCardId, PCall, PMail,Pid,Ppsw):
     return True
 
 
+def manager_distribute():
+    # todo 对所有未分配订单进行分配
+    pass
+
 
 def manager_modify_poster(PNum, PName, PId, PCall, PMail):
     # todo 修改跑腿人员信息,参数为工号，名字，身份证号，电话，驿站
@@ -360,7 +359,16 @@ def manager_modify_poster(PNum, PName, PId, PCall, PMail):
 
 def manager_modify_distribute(order_num, poster_num):
     # todo 修改订单分配人员，参数为订单号，要分配给的跑腿工号
-    pass
+    cursor = connection.cursor()
+    sql = "select * from 订单表 where 订单_编号='{}'".format(order_num)  # sql语句，此检验订单是否存在
+    cursor.execute(sql)  # 执行sql
+    rows = cursor.fetchall()  # 获取执行结果rows
+    if len(rows) != 0:
+        sql = "update 配送表 set 配送_工号='{}' where 配送_订单编号='{}'".format(poster_num,order_num)  # sql语句
+        cursor.execute(sql)  # 执行sql
+        return True
+    else:
+        return None  # 此订单不存在
 
 
 def manager_get_mail():
