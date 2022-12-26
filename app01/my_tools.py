@@ -373,12 +373,35 @@ def manager_modify_distribute(order_num, poster_num):
 
 def manager_get_mail():
     # todo 获取所有驿站信息，可参考manager_get_distribute()
-    pass
+    cursor = connection.cursor()
+    sql = "select * from 驿站信息表"
+    cursor.execute(sql)
+    # print(sql)
+    rows = cursor.fetchall()
+    # print(rows)
+    list = []
+    for row in rows:
+        dic = {
+            "驿站编号": row[0].rstrip(),
+            "驿站地址": row[1].rstrip(),
+            '驿站电话': row[2].rstrip(),
+            "驿站经度": row[3].rstrip(),
+            '驿站纬度': row[4].rstrip()
+        }
+        list.append(dic)
+    return list
 
 
 def manager_new_mail(MNum, MAdd, MCall, MX, MY):
     # todo 新增驿站,驿站编号，驿站地址，驿站电话，经度和纬度
-    pass
+    cursor = connection.cursor()
+    sql = "select * from 驿站信息表 where 驿站_编号='{}'".format(MNum)  # sql语句，此检验订单是否存在
+    cursor.execute(sql)  # 执行sql
+    rows = cursor.fetchall()  # 获取执行结果rows
+    if len(rows) == 0:
+        sql = "insert into 驿站信息表 values('{}','{}','{}','{}','{}')".format(MNum, MAdd, MCall, MX, MY)  # sql语句
+        cursor.execute(sql)  # 执行sql
+    return
 
 
 def manager_modify_mail(MNum, MAdd, MCall, MX, MY):
@@ -389,4 +412,13 @@ def manager_modify_mail(MNum, MAdd, MCall, MX, MY):
 
 def manager_delete_mail(mail_num):
     # todo 删除驿站，参数为驿站编号
-    pass
+    cursor = connection.cursor()
+    sql1 = "select * from 驿站信息表 where 驿站_编号='{}'".format(mail_num)  # sql语句,查询此跑腿是否存在
+    cursor.execute(sql1)  # 执行sql
+    rows = cursor.fetchall()  # 获取执行结果rows
+    if len(rows) != 0:
+        sql2 = "delete from 驿站信息表 where 驿站_编号='{}'".format(mail_num)  # sql语句
+        cursor.execute(sql2)  # 执行sql
+    return
+
+
