@@ -351,10 +351,18 @@ def manager_distribute():
     pass
 
 
-def manager_modify_poster(PNum, PName, PId, PCall, PMail):
-    # todo 修改跑腿人员信息,参数为工号，名字，身份证号，电话，驿站
+def manager_modify_poster(PNum, PName, PCardId, PCall, PMail,Pid,Ppsw):
+    # todo 修改跑腿人员信息,参数为工号，名字，身份证号，电话，驿站,账号,密码
     # 工号不会被修改，用工号查找然后修改即可
-    pass
+    cursor = connection.cursor()
+    sql = "select * from 跑腿人员信息表 where 跑腿_工号='{}'".format(PNum)  # sql语句，此检验订单是否存在
+    cursor.execute(sql)  # 执行sql
+    rows = cursor.fetchall()  # 获取执行结果rows
+    if len(rows) != 0:
+        sql = "update 跑腿人员信息表 set 跑腿_姓名='{}',跑腿_身份证号='{}',跑腿_电话='{}',跑腿_驿站编号='{}',跑腿_账号='{}'," \
+              "跑腿_密码='{}' where 跑腿_工号='{}'".format(PName, PCardId, PCall, PMail,Pid,Ppsw,PNum)  # sql语句
+        cursor.execute(sql)  # 执行sql
+    return
 
 
 def manager_modify_distribute(order_num, poster_num):
@@ -407,7 +415,15 @@ def manager_new_mail(MNum, MAdd, MCall, MX, MY):
 def manager_modify_mail(MNum, MAdd, MCall, MX, MY):
     # todo 修改驿站信息，驿站编号，驿站地址，驿站电话，经度和纬度
     # 驿站编号不会被修改，用编号查找然后修改即可
-    pass
+    cursor = connection.cursor()
+    sql = "select * from 驿站信息表 where 驿站_编号='{}'".format(MNum)  # sql语句，此检验订单是否存在
+    cursor.execute(sql)  # 执行sql
+    rows = cursor.fetchall()  # 获取执行结果rows
+    if len(rows) != 0:
+        sql = "update 驿站信息表 set 驿站_地址='{}',驿站_电话='{}',驿站_经度='{}',驿站_纬度='{}' " \
+              "where 驿站_编号='{}'".format(MAdd, MCall, MX, MY,MNum)  # sql语句
+        cursor.execute(sql)  # 执行sql
+    return
 
 
 def manager_delete_mail(mail_num):
