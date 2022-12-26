@@ -253,9 +253,9 @@ def manager_get_distribute():
     cursor = connection.cursor()
     sql = "select * from user_view"
     cursor.execute(sql)
-    print(sql)
+    # print(sql)
     rows = cursor.fetchall()
-    print(rows)
+    # print(rows)
     list = []
     for row in rows:
         dic = {
@@ -311,7 +311,7 @@ def manager_exist(id, pwd):
     cursor.execute(sql)  # 执行sql
     print(sql)
     rows = cursor.fetchall()  # 获取执行结果rows
-    print(rows[0][1],pwd)
+    print(rows[0][1], pwd)
     print(rows[0][1] == pwd)
     if len(rows) != 0 and rows[0][1] == pwd:
         str = rows[0][2].rstrip()  # 去除串结尾空格
@@ -331,4 +331,36 @@ def manager_distribute():
 
 def manager_new_poster(PNum, PName, PId, PCall, PMail):
     # todo 新增跑腿人员,参数为工号，名字，身份证号，电话，驿站
+    pass
+
+
+def manager_modify_poster(PNum, PName, PId, PCall, PMail):
+    # todo 修改跑腿人员信息,参数为工号，名字，身份证号，电话，驿站
+    # 工号不会被修改，用工号查找然后修改即可
+    pass
+
+
+def manager_modify_distribute(order_num, poster_num):
+    # todo 修改订单分配人员，参数为订单号，要分配给的跑腿工号
+    pass
+
+
+def manager_get_mail():
+    # todo 获取所有驿站信息，可参考manager_get_distribute()
+    pass
+
+
+def manager_new_mail(MNum, MAdd, MCall, MX, MY):
+    # todo 新增驿站,驿站编号，驿站地址，驿站电话，经度和纬度
+    pass
+
+
+def manager_modify_mail(MNum, MAdd, MCall, MX, MY):
+    # todo 修改驿站信息，驿站编号，驿站地址，驿站电话，经度和纬度
+    # 驿站编号不会被修改，用编号查找然后修改即可
+    pass
+
+
+def manager_delete_mail(mail_num):
+    # todo 删除驿站，参数为驿站编号
     pass

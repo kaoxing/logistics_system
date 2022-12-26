@@ -30,5 +30,6 @@ urlpatterns = [
     path("manager_setting/", views.user_setting),
     path("manager_distribute/", views.manager_distribute),
     path("manager_poster/", views.manager_poster),
+    path("manager_mail/", views.manager_mail),
     path("map/", views.map)
 ]

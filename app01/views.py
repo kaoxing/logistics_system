@@ -203,12 +203,16 @@ def manager_distribute(request):
     ope = data.get("ope")
     name = data.get('name')
     order_num = data.get("order_num")
+    poster_num = data.get("poster_num")
+    print(data)
     if tls.manager_exist(id, pwd) is None:
         return redirect(local + "manager_login/")
     if ope == "退货":
         tls.manager_refund(order_num)
     elif ope == "分配":
         tls.manager_distribute()
+    elif ope == "修改":
+        tls.manager_modify_distribute(order_num, poster_num)
     return JsonResponse({"data": None})
 
 
@@ -231,17 +235,66 @@ def manager_poster(request):
     ope = data.get("ope")
     poster_num = data.get("poster_num")
     pwd = coder.decode(pwd, id)
+    print(data)
     if tls.manager_exist(id, pwd) is None:
         return redirect(local + "manager_login/")
-    if ope == "删除":
+    elif ope == "删除":
         tls.manager_delete_poster(poster_num)
-    if ope == "新增":
+    elif ope == "新增":
         PNum = data.get("PNum")
         PId = data.get("PId")
         PCall = data.get("PCall")
         PMail = data.get("PMail")
         PName = data.get("PName")
         tls.manager_new_poster(PNum, PName, PId, PCall, PMail)
+    elif ope == "修改":
+        PNum = data.get("PNum")
+        PId = data.get("PId")
+        PCall = data.get("PCall")
+        PMail = data.get("PMail")
+        PName = data.get("PName")
+        tls.manager_modify_poster(PNum, PName, PId, PCall, PMail)
+    return JsonResponse({"data": None})
+
+
+def manager_mail(request):
+    """后台驿站"""
+    if request.method == 'GET':
+        data = request.GET
+        id = data.get('id')
+        name = data.get('name')
+        pwd = data.get('pwd')
+        if id is None:
+            return redirect(local + "manager_mail/")
+        mail_list = tls.manager_get_mail()
+        return render(request, "manager_mail.html",
+                      {'name': name, 'id': id, 'pwd': pwd, 'List': json.dumps(mail_list)})
+    # 接收到请求
+    data = json.loads(request.body)
+    id = data.get("id")
+    pwd = data.get("pwd")
+    ope = data.get("ope")
+    mail_num = data.get("mail_num")
+    pwd = coder.decode(pwd, id)
+    print(data)
+    if tls.manager_exist(id, pwd) is None:
+        return redirect(local + "manager_login/")
+    elif ope == "删除":
+        tls.manager_delete_mail(mail_num)
+    elif ope == "新增":
+        MNum = data.get("MNum")
+        MAdd = data.get("MAdd")
+        MCall = data.get("MCall")
+        MX = data.get("MX")
+        MY = data.get("MY")
+        tls.manager_new_mail(MNum, MAdd, MCall, MX, MY)
+    elif ope == "修改":
+        MNum = data.get("MNum")
+        MAdd = data.get("MAdd")
+        MCall = data.get("MCall")
+        MX = data.get("MX")
+        MY = data.get("MY")
+        tls.manager_modify_mail(MNum, MAdd, MCall, MX, MY)
     return JsonResponse({"data": None})
 
 

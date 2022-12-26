@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>跑腿管理</title>
+    <title>驿站管理</title>
 </head>
 <body>
 <script src="{% static '/js/vue.js'%}"></script>
@@ -18,14 +18,14 @@
 <div id="app">
     <div  style="text-align:right">
         <span>---欢迎您，{{name}}---</span>
-        <el-button type="primary" @click="goMail">驿站管理</el-button>
+        <el-button type="primary" @click="goPoster">跑腿管理</el-button>
         <el-button type="primary" @click="goDistribute">订单管理</el-button>
         <el-button type="danger" @click="goLogin">退出账号</el-button>
     </div>
     <br>
     <div style="text-align:center">
         <el-button type="success" @click="showNew" style="width:30%;margin-bottom:15px;">
-            新   增   跑   腿
+            新   增   驿   站
         </el-button>
     </div>
     <br>
@@ -36,63 +36,70 @@
         width="100">
       </el-table-column>
       <el-table-column
-        prop="工号"
-        label="工号"
+        prop="驿站编号"
+        label="驿站编号"
         width="300">
       </el-table-column>
       <el-table-column
-        prop="姓名"
-        label="姓名"
+        prop="驿站地址"
+        label="驿站地址"
         width="300">
       </el-table-column>
         <el-table-column
-        prop="身份证号"
-        label="身份证号"
+        prop="驿站电话"
+        label="驿站电话"
         width="300">
       </el-table-column>
         <el-table-column
-        prop="电话"
-        label="电话"
+        prop="驿站经度"
+        label="驿站经度"
         width="300">
       </el-table-column>
         <el-table-column
-        prop="驿站编号"
-        label="驿站编号"
+        prop="驿站纬度"
+        label="驿站纬度"
         width="300">
       </el-table-column>
         <el-table-column label="操作" prop="action" align="center">
           <div  slot-scope="scope">
               <el-button type="primary" @click="showChange(scope.$index, scope.row)">修改</el-button>
+              <el-button type="primary" @click="showMap(scope.$index, scope.row)">查看地点</el-button>
             <el-button type="danger" @click="deletef(scope.$index, scope.row)">删除</el-button>
           </div>
         </el-table-column>
     </el-table>
     <el-dialog
-    title="人员信息"
+    title="驿站信息"
     :visible.sync="dialogVisible1"
     width="30%"
     :show-close="show1">
     <el-form ref="form" label-width="80px">
-  <el-form-item label="工号">
+  <el-form-item label="驿站编号">
     <el-input  maxlength="10" type="text" v-model="PNum" :disabled="Pdisable"></el-input>
   </el-form-item>
-    <el-form-item label="姓名">
-    <el-input  maxlength="20" type="text" v-model="PName"></el-input>
+    <el-form-item label="驿站地址">
+    <el-input  maxlength="20" type="text" v-model="PAdd"></el-input>
   </el-form-item>
-    <el-form-item label="身份证号">
-    <el-input  maxlength="18" type="text" v-model="PId"></el-input>
+    <el-form-item label="驿站电话">
+    <el-input  maxlength="18" type="text" v-model="PCall"></el-input>
   </el-form-item>
-    <el-form-item label="电话">
-    <el-input  maxlength="20" type="text" v-model="PCall"></el-input>
+    <el-form-item label="驿站经度">
+    <el-input  maxlength="20" type="text" v-model="PX"></el-input>
   </el-form-item>
-    <el-form-item label="驿站编号">
-    <el-input  maxlength="10" type="text" v-model="PMail"></el-input>
+    <el-form-item label="驿站纬度">
+    <el-input  maxlength="10" type="text" v-model="PY"></el-input>
   </el-form-item>
 </el-form>
     <span slot="footer" class="dialog-footer">
         <el-button @click="closeDialog1">取 消</el-button>
     <el-button @click="newPoster">确 定</el-button>
     </span>
+    </el-dialog>
+    <el-dialog
+      title="地图"
+      :visible.sync="dialogVisible2"
+      width="30%">
+        <div id="l-map" style="height: 600px"></div>
     </el-dialog>
 </div>
 <script>
@@ -102,41 +109,37 @@
         ope:"",
         id:"{{id}}",
         pwd:"{{ pwd }}",
-        poster_num:"",
-        PNum:"",
-        PName:"",
-        PCall:"",
-        PMail:"",
-        PId:"",
+        mail_num:"",
+        MNum:"",
+        MAdd:"",
+        MCall:"",
+        MX:"",
+        MY:"",
     };
     const local="/";
     let search=new Vue({
         el:"#app",
         data:{
             dataTable:table,
-            dialogVisible: false,
+            dialogVisible2: false,
             show1:true,
             dialogVisible1: false,
             PNum:"",
-            PName:"",
+            PAdd:"",
             PCall:"",
-            PMail:"",
-            PId:"",
+            PX:"",
+            PY:"",
             Pdisable:""
         },
         methods:{
-            goMail:function (index,row){
-                let mail_url = local+'manager_mail/?name={{name}}&id={{id}}&pwd={{pwd}}';
-                window.location.replace(mail_url)
-            },
             showChange:function (index,row){
                 this.dialogVisible1 = true;
                 load.ope = "修改";
-                this.PNum = row.工号;
-                this.PName = row.姓名;
-                this.PId = row.身份证号;
-                this.PCall = row.电话;
-                this.PMail = row.驿站编号;
+                this.PNum = row.驿站编号;
+                this.PAdd = row.驿站地址;
+                this.PCall = row.驿站电话;
+                this.PX = row.驿站经度;
+                this.PY = row.驿站纬度;
                 this.Pdisable = true
             },
             closeDialog1:function(){
@@ -149,8 +152,8 @@
             },
             deletef:function (index,row){
                 load.ope = "删除";
-                load.poster_num = row.工号;
-                fetch("/manager_poster/?name={{name}}&id={{id}}&pwd={{pwd}}", {
+                load.mail_num = row.驿站编号;
+                fetch("/manager_mail/?name={{name}}&id={{id}}&pwd={{pwd}}", {
                     method: 'POST',
                     mode: 'cors',
                     headers: {
@@ -159,18 +162,18 @@
                     body: JSON.stringify(load)
                     }).then(function(response) {
                         // let url = 'http://localhost:8000/setting/?name='+this.name+'&id={{id}}'+'&pwd='+this.resultPwd;
-                        window.location.replace("/manager_poster/?name={{name}}&id={{id}}&pwd={{pwd}}")
+                        window.location.replace("/manager_mail/?name={{name}}&id={{id}}&pwd={{pwd}}")
                     }).catch(function(err) {
                         // 出错了;
                     });
             },
             newPoster:function (){
-                load.PNum = this.PNum;
-                load.PId = this.PId;
-                load.PCall = this.PCall;
-                load.PMail = this.PMail;
-                load.PName = this.PName;
-                fetch("/manager_poster/?name={{name}}&id={{id}}&pwd={{pwd}}", {
+                load.MNum = this.PNum;
+                load.MAdd = this.PAdd;
+                load.MCall = this.PCall;
+                load.MX = this.PX;
+                load.MY = this.PY;
+                fetch("/manager_mail/?name={{name}}&id={{id}}&pwd={{pwd}}", {
                     method: 'POST',
                     mode: 'cors',
                     headers: {
@@ -179,7 +182,7 @@
                     body: JSON.stringify(load)
                     }).then(function(response) {
                         // let url = 'http://localhost:8000/setting/?name='+this.name+'&id={{id}}'+'&pwd='+this.resultPwd;
-                        window.location.replace("/manager_poster/?name={{name}}&id={{id}}&pwd={{pwd}}")
+                        window.location.replace("/manager_mail/?name={{name}}&id={{id}}&pwd={{pwd}}")
                     }).catch(function(err) {
                         // 出错了;
                     });
@@ -190,7 +193,25 @@
             goDistribute:function(){
                 window.location.replace("/manager_distribute/?name={{name}}&id={{id}}&pwd={{pwd}}");
             },
-
+            goPoster:function(){
+                let poster_url = local+'manager_poster/?name={{name}}&id={{id}}&pwd={{pwd}}';
+                window.location.replace(poster_url)
+            },
+            showMap:function(index,row){
+                this.dialogVisible2 = true;
+                setTimeout(() => {
+                    this.baiduMap(row["驿站经度"],row["驿站纬度"])
+                }, 0);
+            },
+            baiduMap(x,y){
+                let map = new BMap.Map("l-map");
+                map.enableScrollWheelZoom(); //启用滚轮放大缩小，默认禁用
+                map.enableContinuousZoom(); //启用地图惯性拖拽，默认禁用
+                let point = new BMap.Point(x,y);
+                map.centerAndZoom(point, 15);
+                let marker = new BMap.Marker(point);        // 创建标注
+                map.addOverlay(marker);
+            },
         }
     })
 </script>
