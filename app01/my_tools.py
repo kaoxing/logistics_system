@@ -2,7 +2,6 @@ import base64
 import os
 import random
 import re
-
 from pathlib import Path
 from django.db import connection
 
@@ -382,7 +381,7 @@ def manager_distribute():
     sql = "update 订单表 set 订单_是否分配 = 'Y'"
     cursor.execute(sql)
 
-    pass
+    return
 
 
 def manager_modify_poster(PNum, PName, PCardId, PCall, PMail,Pid,Ppsw):
