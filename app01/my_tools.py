@@ -321,7 +321,16 @@ def manager_exist(id, pwd):
 
 def manager_refund(order_num):
     # todo 退货,参数位订单编号，将是否退货修改即可
-    pass
+    cursor = connection.cursor()
+    sql = "select * from 订单表 where 订单_编号='{}'".format(order_num)  # sql语句，此检验订单是否存在
+    cursor.execute(sql)  # 执行sql
+    rows = cursor.fetchall()  # 获取执行结果rows
+    if len(rows) != 0 :
+        sql = "update 订单表 set 订单_是否退货='Y' where 订单_编号='{}'".format(order_num)  # sql语句
+        cursor.execute(sql)  # 执行sql
+        return True
+    else:
+        return None # 此订单不存在
 
 
 def manager_distribute():
