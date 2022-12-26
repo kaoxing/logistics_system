@@ -338,6 +338,15 @@ def manager_distribute():
     pass
 
 
-def manager_new_poster(PNum, PName, PId, PCall, PMail):
-    # todo 新增跑腿人员,参数为工号，名字，身份证号，电话，驿站
-    pass
+def manager_new_poster(PNum, PName, PCardId, PCall, PMail,Pid,Ppsw):
+    # todo 新增跑腿人员,参数为工号，名字，身份证号，电话，驿站,跑腿账号,跑腿密码
+    cursor = connection.cursor()
+    sql = "select * from 跑腿人员信息表 where 跑腿_工号='{}'".format(PNum)  # sql语句，此检验订单是否存在
+    cursor.execute(sql)  # 执行sql
+    rows = cursor.fetchall()  # 获取执行结果rows
+    if len(rows) == 0:
+        sql = "insert into 跑腿人员信息表 values('{}','{}','{}','{}','{}'," \
+              "'{}','{}')".format(PNum,PName,PCardId,PCall,PMail,Pid,Ppsw)  # sql语句
+        cursor.execute(sql)  # 执行sql
+    return True
+
