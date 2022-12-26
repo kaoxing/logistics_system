@@ -2,6 +2,7 @@ import base64
 import os
 import random
 import re
+
 from pathlib import Path
 from django.db import connection
 
@@ -348,6 +349,39 @@ def manager_new_poster(PNum, PName, PCardId, PCall, PMail,Pid,Ppsw):
 
 def manager_distribute():
     # todo 对所有未分配订单进行分配
+    cursor = connection.cursor()
+
+    lists = [[] for i in range(1000)]
+    num = [0 for i in range(1000)]
+    cur = [0 for i in range(1000)]
+
+    sql = "select * from 跑腿人员信息表"
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+
+    print(len(rows))
+
+    for row in rows:
+        lists[int(row[4])].append(row[0])
+        num[int(row[4])] += 1
+
+    sql = "select * from 订单表 where 订单_是否分配 = 'N'"
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+
+    for row in rows:
+        station = int(row[7])
+        sql = "insert into 配送表 values('{}', '{}', '{}')".format(row[0], lists[station][cur[station]], "N")
+        cursor.execute(sql)
+        print(station)
+        print(sql)
+        cur[station] += 1
+        if cur[station] == num[station]:
+            cur[station] = 0;
+
+    sql = "update 订单表 set 订单_是否分配 = 'Y'"
+    cursor.execute(sql)
+
     pass
 
 
