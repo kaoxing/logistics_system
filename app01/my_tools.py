@@ -122,7 +122,6 @@ def poster_deliver(order_num):
 # print('testing here')
 # poster_deliver('d221121077')
 
-
 def poster_change_info(id, rName, sPwd, rPwd):
     # todo 跑腿账号信息修改，参数为跑腿账号，跑腿要改为的名字，原密码，要改为的密码，
     #  要求先改名，此时不检验密码是否正确，再改密码，此时需要先确认原密码正确，再改密码，若要改为的密码为空，则不做修改
@@ -599,9 +598,22 @@ def manager_delete_mail(mail_num):
 
 def insert_order(order_num, number, mail_num, user_id):
     # todo 向订单表中插入一条新数据，订单号，数量，驿站编码，用户购买账户id
+
+    cursor = connection.cursor()
+    sql = "insert into 订单表 values('{}', '{}', '{}', {}, 'N', 'N', 'N', '{}', '无')".format(order_num, user_id, "", number, mail_num);
+    cursor.execute(sql)
+
     pass
 
 
 def get_mails():
     # todo 获取当前所有驿站的编号，返回编号数组
+    cursor = connection.cursor()
+    sql = "select * from 驿站信息表"
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    list = []
+    for row in rows:
+        list.append(row[0])
+    return list
     pass
