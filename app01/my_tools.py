@@ -31,9 +31,11 @@ def user_exist(id, pwd):
         str = rows[0][3].rstrip()  # 去除串结尾空格
         return str
     return None
-#ok
-#print(user_exist('yh2014010','yh2014010'))
-#print(user_exist('yh2014010','000000000'))
+
+
+# ok
+# print(user_exist('yh2014010','yh2014010'))
+# print(user_exist('yh2014010','000000000'))
 
 
 def poster_exist(id, pwd):
@@ -46,9 +48,11 @@ def poster_exist(id, pwd):
         str = rows[0][1].rstrip()  # 去除串结尾空格
         return str
     return None
-#ok
-#print(poster_exist('pt2014010','pt2014010'))#账号密码正确
-#print(poster_exist('pt2014010','000000000'))#账号密码错误
+
+
+# ok
+# print(poster_exist('pt2014010','pt2014010'))#账号密码正确
+# print(poster_exist('pt2014010','000000000'))#账号密码错误
 
 
 def manager_exist(id, pwd):
@@ -62,9 +66,10 @@ def manager_exist(id, pwd):
         return str
     return None
 
-#tbc
-#print(manager_exist('ad2014001','ad2014001'))#账号密码正确
-#print(manager_exist('ad2014001','000000000'))#账号密码错误
+
+# tbc
+# print(manager_exist('ad2014001','ad2014001'))#账号密码正确
+# print(manager_exist('ad2014001','000000000'))#账号密码错误
 
 
 def poster_get_order(id):
@@ -91,9 +96,10 @@ def poster_get_order(id):
         list.append(dic)
     return list
 
-#ok
-#list1=poster_get_order('pt2014008')
-#print(list1)
+
+# ok
+# list1=poster_get_order('pt2014008')
+# print(list1)
 
 
 def poster_deliver(order_num):
@@ -110,9 +116,11 @@ def poster_deliver(order_num):
     elif rows[0][0] == 'Y':
         sql = "update 配送表 set 配送_状态 = 'P' where 配送_订单编号 = '{}'".format(order_num)
         cursor.execute(sql)
-#ok
-#print('testing here')
-#poster_deliver('d221121077')
+
+
+# ok
+# print('testing here')
+# poster_deliver('d221121077')
 
 
 def poster_change_info(id, rName, sPwd, rPwd):
@@ -131,9 +139,11 @@ def poster_change_info(id, rName, sPwd, rPwd):
     sql = "update 跑腿人员信息表 set 跑腿_密码= '{}'  where 跑腿_账号='{}'".format(rPwd, id)  # 修改密码
     cursor.execute(sql)
     return True  # 成功修改完密码后返回True
-#ok
-#poster_change_info('pt2014002','艾金凤new','pt2014002','pt2013002')
-#print(poster_change_info('pt2014002','艾金凤','pt2014002','pt2014002'))
+
+
+# ok
+# poster_change_info('pt2014002','艾金凤new','pt2014002','pt2013002')
+# print(poster_change_info('pt2014002','艾金凤','pt2014002','pt2014002'))
 
 def setting_get_poster_pwd(id):
     # todo 通过跑腿账号获取跑腿账号密码,要求返回获取到的密码
@@ -142,8 +152,10 @@ def setting_get_poster_pwd(id):
     cursor.execute(sql)
     rows = cursor.fetchall()
     return rows[0][0]
-#ok
-#print(setting_get_poster_pwd('pt2014003'))
+
+
+# ok
+# print(setting_get_poster_pwd('pt2014003'))
 
 
 def user_get_order(id):
@@ -171,10 +183,10 @@ def user_get_order(id):
         list.append(dic)
     return list
 
-#ok
-#lst1=user_get_order('yh2014010')
-#print(lst1)
 
+# ok
+# lst1=user_get_order('yh2014010')
+# print(lst1)
 
 
 def user_change_info(id, rName, sPwd, rPwd):
@@ -196,9 +208,10 @@ def user_change_info(id, rName, sPwd, rPwd):
     cursor.execute(sql)
     return True  # 成功修改完密码后返回True
 
-#ok
-#user_change_info('yh2014003','王瑞new','yh2014003','yh2014000')#密码正确用例
-#print(user_change_info('yh2014003','王瑞','000000000','yh2014003'))#密码错误用例
+
+# ok
+# user_change_info('yh2014003','王瑞new','yh2014003','yh2014000')#密码正确用例
+# print(user_change_info('yh2014003','王瑞','000000000','yh2014003'))#密码错误用例
 
 def user_receive(order_num):
     # todo 用户收货
@@ -209,8 +222,10 @@ def user_receive(order_num):
     if rows[0][0] == 'N':
         sql = "update 订单表 set 订单_是否签收 = 'Y' where 订单_编号 = '{}'".format(order_num)
         cursor.execute(sql)
-#ok
-#user_receive('d221121077')
+
+
+# ok
+# user_receive('d221121077')
 
 def user_get_buyId(id):
     cursor = connection.cursor()
@@ -218,16 +233,20 @@ def user_get_buyId(id):
     cursor.execute(sql)
     rows = cursor.fetchall()
     return rows[0][0].rstrip()
-#ok
-#print(user_get_buyId('yh2014008'))
+
+
+# ok
+# print(user_get_buyId('yh2014008'))
 
 
 def user_change_buyId(id, buyId):
     cursor = connection.cursor()
     sql = "update 用户信息表 set 用户_购买账号= '{}'  where 用户_账号='{}'".format(buyId, id)
     cursor.execute(sql)
-#ok
-#user_change_buyId('yh2014004','gm2014004')
+
+
+# ok
+# user_change_buyId('yh2014004','gm2014004')
 
 def setting_get_user_pwd(id):
     # todo 查找用户密码
@@ -236,8 +255,10 @@ def setting_get_user_pwd(id):
     cursor.execute(sql)
     rows = cursor.fetchall()
     return rows[0][0]
-#ok
-#print(setting_get_user_pwd('yh2014008'))
+
+
+# ok
+# print(setting_get_user_pwd('yh2014008'))
 
 
 def manager_get_order():
@@ -262,9 +283,10 @@ def manager_get_order():
         list.append(dic)
     return list
 
-#ok
-#lst=manager_get_order()
-#print(lst)
+
+# ok
+# lst=manager_get_order()
+# print(lst)
 
 
 def manager_get_poster():
@@ -286,8 +308,10 @@ def manager_get_poster():
         }
         list.append(dic)
     return list
-#ok
-#print(manager_get_poster())
+
+
+# ok
+# print(manager_get_poster())
 
 
 def manager_get_distribute():
@@ -317,8 +341,10 @@ def manager_get_distribute():
         }
         list.append(dic)
     return list
-#ok
-#print(manager_get_distribute())
+
+
+# ok
+# print(manager_get_distribute())
 
 
 def manager_delete_order(order_id):
@@ -326,7 +352,7 @@ def manager_delete_order(order_id):
     sql = "select * from 订单表 where 订单_编号='{}'".format(order_id)  # sql语句,查询此配送单是否存在
     cursor.execute(sql)  # 执行sql
     rows = cursor.fetchall()  # 获取执行结果rows
-    print('rows:',rows)
+    print('rows:', rows)
     if len(rows) != 0:
         sql2 = "delete from 订单表 where 订单_编号='{}'".format(order_id)  # sql语句
         cursor.execute(sql2)  # 执行sql
@@ -334,10 +360,11 @@ def manager_delete_order(order_id):
         cursor.execute(sql3)  # 执行sql
     return True
 
-#ok
-#print('testing here')
-#print(manager_delete_order('0000000000'))#错误订单编号
-#print(manager_delete_order('d221121087'))#正确订单编号
+
+# ok
+# print('testing here')
+# print(manager_delete_order('0000000000'))#错误订单编号
+# print(manager_delete_order('d221121087'))#正确订单编号
 
 
 def manager_delete_poster(poster_id):
@@ -352,8 +379,9 @@ def manager_delete_poster(poster_id):
     else:
         return None  # 跑腿不存在
 
-#ok
-#print(manager_delete_poster('pt2014011'))
+
+# ok
+# print(manager_delete_poster('pt2014011'))
 
 
 def manager_exist(id, pwd):
@@ -370,9 +398,10 @@ def manager_exist(id, pwd):
         return str
     return None
 
-#ok
-#print(manager_exist('ad2014004','ad2014004'))#账号密码均正确
-#print(manager_exist('ad2014004','000000000'))#密码错误
+
+# ok
+# print(manager_exist('ad2014004','ad2014004'))#账号密码均正确
+# print(manager_exist('ad2014004','000000000'))#密码错误
 
 
 def manager_refund(order_num):
@@ -381,17 +410,19 @@ def manager_refund(order_num):
     sql = "select * from 订单表 where 订单_编号='{}'".format(order_num)  # sql语句，此检验订单是否存在
     cursor.execute(sql)  # 执行sql
     rows = cursor.fetchall()  # 获取执行结果rows
-    if len(rows) != 0 :
+    if len(rows) != 0:
         sql = "update 订单表 set 订单_是否退货='Y' where 订单_编号='{}'".format(order_num)  # sql语句
         cursor.execute(sql)  # 执行sql
         return True
     else:
-        return None # 此订单不存在
-#ok
-#print(manager_refund('d221121077'))
-#print(manager_refund('0000000000'))
+        return None  # 此订单不存在
 
-def manager_new_poster(PNum, PName, PCardId, PCall, PMail,Pid,Ppsw):
+
+# ok
+# print(manager_refund('d221121077'))
+# print(manager_refund('0000000000'))
+
+def manager_new_poster(PNum, PName, PCardId, PCall, PMail, Pid, Ppsw):
     # todo 新增跑腿人员,参数为工号，名字，身份证号，电话，驿站,跑腿账号,跑腿密码
     cursor = connection.cursor()
     sql = "select * from 跑腿人员信息表 where 跑腿_工号='{}'".format(PNum)  # sql语句，此检验订单是否存在
@@ -399,12 +430,14 @@ def manager_new_poster(PNum, PName, PCardId, PCall, PMail,Pid,Ppsw):
     rows = cursor.fetchall()  # 获取执行结果rows
     if len(rows) == 0:
         sql = "insert into 跑腿人员信息表 values('{}','{}','{}','{}','{}'," \
-              "'{}','{}')".format(PNum,PName,PCardId,PCall,PMail,Pid,Ppsw)  # sql语句
+              "'{}','{}')".format(PNum, PName, PCardId, PCall, PMail, Pid, Ppsw)  # sql语句
         cursor.execute(sql)  # 执行sql
     return True
-#ok
-#print('testing here')
-#print(manager_new_poster('pt2014011','张三','350181197206189011','11112340011','001','pt2014011','pt2014011'))
+
+
+# ok
+# print('testing here')
+# print(manager_new_poster('pt2014011','张三','350181197206189011','11112340011','001','pt2014011','pt2014011'))
 
 
 def manager_distribute():
@@ -443,10 +476,12 @@ def manager_distribute():
     cursor.execute(sql)
 
     return
-#ok
-#manager_distribute()
 
-def manager_modify_poster(PNum, PName, PCardId, PCall, PMail,Pid,Ppsw):
+
+# ok
+# manager_distribute()
+
+def manager_modify_poster(PNum, PName, PCardId, PCall, PMail, Pid, Ppsw):
     # todo 修改跑腿人员信息,参数为工号，名字，身份证号，电话，驿站,账号,密码
     # 工号不会被修改，用工号查找然后修改即可
     cursor = connection.cursor()
@@ -455,11 +490,13 @@ def manager_modify_poster(PNum, PName, PCardId, PCall, PMail,Pid,Ppsw):
     rows = cursor.fetchall()  # 获取执行结果rows
     if len(rows) != 0:
         sql = "update 跑腿人员信息表 set 跑腿_姓名='{}',跑腿_身份证号='{}',跑腿_电话='{}',跑腿_驿站编号='{}',跑腿_账号='{}'," \
-              "跑腿_密码='{}' where 跑腿_工号='{}'".format(PName, PCardId, PCall, PMail,Pid,Ppsw,PNum)  # sql语句
+              "跑腿_密码='{}' where 跑腿_工号='{}'".format(PName, PCardId, PCall, PMail, Pid, Ppsw, PNum)  # sql语句
         cursor.execute(sql)  # 执行sql
     return
-#ok
-#manager_modify_poster('pt2014011','张三','350181197206189011','12345678911','002','pt2014011','pt2014011')
+
+
+# ok
+# manager_modify_poster('pt2014011','张三','350181197206189011','12345678911','002','pt2014011','pt2014011')
 
 
 def manager_modify_distribute(order_num, poster_num):
@@ -473,17 +510,19 @@ def manager_modify_distribute(order_num, poster_num):
         cursor.execute(sql)
         rows_ = cursor.fetchall();
         if len(rows_) != 0 and rows_[0][4] == rows[0][7]:
-            sql = "update 配送表 set 配送_工号='{}' where 配送_订单编号='{}'".format(poster_num,order_num)  # sql语句
+            sql = "update 配送表 set 配送_工号='{}' where 配送_订单编号='{}'".format(poster_num, order_num)  # sql语句
             cursor.execute(sql)  # 执行sql
             return True
         else:
             return None
     else:
         return None  # 此订单不存在
-#ok
-#print(manager_modify_distribute('0000000000','pt2014011'))#订单号不存在
-#print(manager_modify_distribute('d221121108','pt2014011'))#订单号存在，但驿站不匹配
-#print(manager_modify_distribute('d221121022','pt2014011'))#订单号存在，驿站匹配
+
+
+# ok
+# print(manager_modify_distribute('0000000000','pt2014011'))#订单号不存在
+# print(manager_modify_distribute('d221121108','pt2014011'))#订单号存在，但驿站不匹配
+# print(manager_modify_distribute('d221121022','pt2014011'))#订单号存在，驿站匹配
 
 
 def manager_get_mail():
@@ -505,8 +544,10 @@ def manager_get_mail():
         }
         list.append(dic)
     return list
-#ok
-#print(manager_get_mail())
+
+
+# ok
+# print(manager_get_mail())
 
 
 def manager_new_mail(MNum, MAdd, MCall, MX, MY):
@@ -519,8 +560,10 @@ def manager_new_mail(MNum, MAdd, MCall, MX, MY):
         sql = "insert into 驿站信息表 values('{}','{}','{}','{}','{}')".format(MNum, MAdd, MCall, MX, MY)  # sql语句
         cursor.execute(sql)  # 执行sql
     return
-#ok
-#manager_new_mail('009','安徽大学','12345678911','117.181111','31.77777')
+
+
+# ok
+# manager_new_mail('009','安徽大学','12345678911','117.181111','31.77777')
 
 def manager_modify_mail(MNum, MAdd, MCall, MX, MY):
     # todo 修改驿站信息，驿站编号，驿站地址，驿站电话，经度和纬度
@@ -531,12 +574,13 @@ def manager_modify_mail(MNum, MAdd, MCall, MX, MY):
     rows = cursor.fetchall()  # 获取执行结果rows
     if len(rows) != 0:
         sql = "update 驿站信息表 set 驿站_地址='{}',驿站_电话='{}',驿站_经度='{}',驿站_纬度='{}' " \
-              "where 驿站_编号='{}'".format(MAdd, MCall, MX, MY,MNum)  # sql语句
+              "where 驿站_编号='{}'".format(MAdd, MCall, MX, MY, MNum)  # sql语句
         cursor.execute(sql)  # 执行sql
     return
 
-#ok
-#manager_modify_mail('009','安徽省合肥市蜀山区九龙路安徽大学梅园','12345678911','117.00000','31.7000')
+
+# ok
+# manager_modify_mail('009','安徽省合肥市蜀山区九龙路安徽大学梅园','12345678911','117.00000','31.7000')
 
 def manager_delete_mail(mail_num):
     # todo 删除驿站，参数为驿站编号
@@ -548,10 +592,16 @@ def manager_delete_mail(mail_num):
         sql2 = "delete from 驿站信息表 where 驿站_编号='{}'".format(mail_num)  # sql语句
         cursor.execute(sql2)  # 执行sql
     return
-#ok
-#manager_delete_mail('009')
 
-def insert_order(order_num,number,mail_num,user_id):
-    # todo 向订单表中插入一条新数据
+
+# ok
+# manager_delete_mail('009')
+
+def insert_order(order_num, number, mail_num, user_id):
+    # todo 向订单表中插入一条新数据，订单号，数量，驿站编码，用户购买账户id
     pass
 
+
+def get_mails():
+    # todo 获取当前所有驿站的编号，返回编号数组
+    pass

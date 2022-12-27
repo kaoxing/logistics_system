@@ -37,7 +37,7 @@ def port(request):
     ope = data.get("ope")
     key = data.get("portKey")
     load = data.get("load")
-    print(data)
+    # print(data)
     if portKey != coder.decode(key, "coderX"):
         # 若密钥错误
         return JsonResponse({"info": "错误的密钥!"})
@@ -54,7 +54,10 @@ def port(request):
         user_id = data.get("UNO")
         tls.insert_order(order_num, number, mail_num, user_id)
         return JsonResponse({"info": "成功接收"})
-    # elif ope == "":
+    elif ope == "getMails":
+        # 请求所有驿站编号
+        pts.my_post(request.ur)
+
     return JsonResponse({"info": "error"})
 
 
@@ -251,8 +254,12 @@ def manager_distribute(request):
     if tls.manager_exist(id, pwd) is None:
         return redirect(local + "manager_login/")
     if ope == "退货":
+        pass
         # tls.manager_refund(order_num)
-        pts.post_something()
+        # ret = pts.my_post("http://127.0.0.1:8000/port/", {"ope": "buyOrder"})
+        # ret = ret.json()
+        # print(ret)
+        # tls.manager_refund()
     elif ope == "分配":
         tls.manager_distribute()
     elif ope == "修改":
