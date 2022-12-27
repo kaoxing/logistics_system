@@ -48,11 +48,11 @@ def poster_exist(id, pwd):
 def manager_exist(id, pwd):
     # todo 后台登录，返回为None则不存在，否则返回用户昵称
     cursor = connection.cursor()
-    sql = "select * from 用户信息表 where 用户_账号='{}'".format(id)  # sql语句
+    sql = "select * from 管理员 where 管理员_账号='{}'".format(id)  # sql语句
     cursor.execute(sql)  # 执行sql
     rows = cursor.fetchall()  # 获取执行结果rows
     if len(rows) != 0 and rows[0][1] == pwd:
-        str = rows[0][3].rstrip()  # 去除串结尾空格
+        str = rows[0][2].rstrip()  # 去除串结尾空格
         return str
     return None
 
@@ -280,21 +280,25 @@ def manager_get_distribute():
 
 def manager_delete_order(order_id):
     cursor = connection.cursor()
-    sql1 = "select * from 配送表 where 配送_订单编号='{}'".format(order_id)  # sql语句,查询此配送单是否存在
-    cursor.execute(sql1)  # 执行sql
+    sql = "select * from 订单表 where 订单_编号='{}'".format(order_id)  # sql语句,查询此配送单是否存在
+    cursor.execute(sql)  # 执行sql
     rows = cursor.fetchall()  # 获取执行结果rows
+    print('rows:',rows)
     if len(rows) != 0:
-        sql2 = "delete from 配送表 where 配送_订单编号='{}'".format(order_id)  # sql语句
+        sql2 = "delete from 订单表 where 订单_编号='{}'".format(order_id)  # sql语句
         cursor.execute(sql2)  # 执行sql
-        return True
-    else:
-        return None  # 订单不存在
+        sql3 = "delete from 配送表 where 配送_订单编号='{}'".format(order_id)  # sql语句,删除配送表的对应订单
+        cursor.execute(sql3)  # 执行sql
+    return True
 
+
+str=manager_delete_order('d221121011')
+print(str)
 
 def manager_delete_poster(poster_id):
     cursor = connection.cursor()
-    sql1 = "select * from 跑腿人员信息表 where 跑腿_工号='{}'".format(poster_id)  # sql语句,查询此跑腿是否存在
-    cursor.execute(sql1)  # 执行sql
+    sql = "select * from 跑腿人员信息表 where 跑腿_工号='{}'".format(poster_id)  # sql语句,查询此跑腿是否存在
+    cursor.execute(sql)  # 执行sql
     rows = cursor.fetchall()  # 获取执行结果rows
     if len(rows) != 0:
         sql2 = "delete from 跑腿人员信息表 where 跑腿_工号='{}'".format(poster_id)  # sql语句
@@ -459,17 +463,17 @@ def manager_modify_mail(MNum, MAdd, MCall, MX, MY):
     cursor.execute(sql)  # 执行sql
     rows = cursor.fetchall()  # 获取执行结果rows
     if len(rows) != 0:
-        sql = "update 驿站信息表 set 驿站_地址='{}',驿站_电话='{}',驿站_经度='{}',驿站_纬度='{}' " \
+        sql1 = "update 驿站信息表 set 驿站_地址='{}',驿站_电话='{}',驿站_经度='{}',驿站_纬度='{}' " \
               "where 驿站_编号='{}'".format(MAdd, MCall, MX, MY,MNum)  # sql语句
-        cursor.execute(sql)  # 执行sql
+        cursor.execute(sql1)  # 执行sql
     return
 
 
 def manager_delete_mail(mail_num):
     # todo 删除驿站，参数为驿站编号
     cursor = connection.cursor()
-    sql1 = "select * from 驿站信息表 where 驿站_编号='{}'".format(mail_num)  # sql语句,查询此跑腿是否存在
-    cursor.execute(sql1)  # 执行sql
+    sql = "select * from 驿站信息表 where 驿站_编号='{}'".format(mail_num)  # sql语句,查询此跑腿是否存在
+    cursor.execute(sql)  # 执行sql
     rows = cursor.fetchall()  # 获取执行结果rows
     if len(rows) != 0:
         sql2 = "delete from 驿站信息表 where 驿站_编号='{}'".format(mail_num)  # sql语句
