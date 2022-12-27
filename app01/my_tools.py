@@ -405,9 +405,15 @@ def manager_modify_distribute(order_num, poster_num):
     cursor.execute(sql)  # 执行sql
     rows = cursor.fetchall()  # 获取执行结果rows
     if len(rows) != 0:
-        sql = "update 配送表 set 配送_工号='{}' where 配送_订单编号='{}'".format(poster_num,order_num)  # sql语句
-        cursor.execute(sql)  # 执行sql
-        return True
+        sql = "select * from 跑腿人员信息表 where 跑腿_工号='{}'".format(poster_num)  # sql语句
+        cursor.execute(sql)
+        rows_ = cursor.fetchall();
+        if len(rows_) != 0 and rows_[0][4] == rows[0][7]:
+            sql = "update 配送表 set 配送_工号='{}' where 配送_订单编号='{}'".format(poster_num,order_num)  # sql语句
+            cursor.execute(sql)  # 执行sql
+            return True
+        else:
+            return None
     else:
         return None  # 此订单不存在
 
