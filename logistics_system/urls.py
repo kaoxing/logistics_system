@@ -31,5 +31,7 @@ urlpatterns = [
     path("manager_distribute/", views.manager_distribute),
     path("manager_poster/", views.manager_poster),
     path("manager_mail/", views.manager_mail),
-    path("map/", views.map)
+    path("port/", views.port),
+    path("map/", views.map),
+    path("", views.home),
 ]

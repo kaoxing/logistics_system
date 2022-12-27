@@ -91,11 +91,14 @@ def encode(source, key):
 
 def decode(source, key):
     key = adjust(key)
-    ans = aes_decrypt(key, bytes(source, 'utf-8'))
+    try:
+        ans = aes_decrypt(key, bytes(source, 'utf-8'))
+    except ValueError:
+        return ""
     return str(ans, 'utf-8')
 
 
 def adjust(key):
-    print(key)
+    # print(key)
     n = 16 - len(key)
     return key + n * "$"

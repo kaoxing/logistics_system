@@ -10,9 +10,52 @@ sys.path.append(current_directory)
 
 import coder
 import my_tools as tls
+import my_ports as pts
 
 # python manage.py runserver
 local = "http://127.0.0.1:8000/"
+
+# 约定好的外部接口密钥，此处是明文，传输时应当用coder.encoder()方法加密，加密的key也需要约定好，此处我用的是coderX
+# 如果其余组没有加密模块，或加密方式不同，明文传输也不是不行，反正也没人看
+portKey = "the_long_dark"
+
+
+def port(request):
+    """
+    外部访问接口，访问地址为.../port/
+    此处规定数据格式为json类型
+    请求类型为POST
+    数据体data={
+        ope="",//具体操作类型，如为"buyOrder"则为获取数据库中订单内容
+        portKey="",//密钥，在执行操作前，应当确定密钥是否正确，密钥应事先约定好，数据体中的portKey是加密后的结果
+        load="",//实际装载数据
+    }
+    """
+    if request.method != "POST":
+        return JsonResponse({"info": "错误的调用方式!"})
+    data = json.loads(request.body)
+    ope = data.get("ope")
+    key = data.get("portKey")
+    load = data.get("load")
+    print(data)
+    if portKey != coder.decode(key, "coderX"):
+        # 若密钥错误
+        return JsonResponse({"info": "错误的密钥!"})
+    if ope == "refund":
+        # 接收到客服系统传来的退货数据
+        order_num = data.get("order_num")
+        tls.manager_refund(load.get("order_num"))
+        return JsonResponse({"info": "成功接收"})
+    elif ope == "buyOrder":
+        # 接收到购买系统传来的订单数据
+        order_num = data.get("ONO")
+        number = data.get("ONUM")
+        mail_num = data.get("OADERSS")
+        user_id = data.get("UNO")
+        tls.insert_order(order_num, number, mail_num, user_id)
+        return JsonResponse({"info": "成功接收"})
+    # elif ope == "":
+    return JsonResponse({"info": "error"})
 
 
 # Create your views here.
@@ -208,7 +251,8 @@ def manager_distribute(request):
     if tls.manager_exist(id, pwd) is None:
         return redirect(local + "manager_login/")
     if ope == "退货":
-        tls.manager_refund(order_num)
+        # tls.manager_refund(order_num)
+        pts.post_something()
     elif ope == "分配":
         tls.manager_distribute()
     elif ope == "修改":

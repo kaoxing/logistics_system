@@ -481,3 +481,7 @@ def manager_delete_mail(mail_num):
     return
 
 
+def insert_order(order_num,number,mail_num,user_id):
+    # todo 向订单表中插入一条新数据
+    pass
+
