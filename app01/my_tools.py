@@ -597,7 +597,7 @@ def manager_delete_mail(mail_num):
 # ok
 # manager_delete_mail('009')
 
-def insert_order(order_num, number, mail_num, user_id):
+def insert_order(order_num, number, mail_num, user_id, goods_num):
     # todo 向订单表中插入一条新数据，订单号，数量，驿站编码，用户购买账户id
     pass
 

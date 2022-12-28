@@ -52,7 +52,8 @@ def port(request):
         number = data.get("ONUM")
         mail_num = data.get("OADERSS")
         user_id = data.get("UNO")
-        tls.insert_order(order_num, number, mail_num, user_id)
+        goods_num = data.get("CNO")
+        tls.insert_order(order_num, number, mail_num, user_id, goods_num)
         return JsonResponse({"info": "成功接收"})
     elif ope == "getMails":
         # 请求所有驿站编号
