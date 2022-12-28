@@ -600,7 +600,7 @@ def insert_order(order_num, number, mail_num, user_id, goods_num):
     # todo 向订单表中插入一条新数据，订单号，数量，驿站编码，用户购买账户id
 
     cursor = connection.cursor()
-    sql = "insert into 订单表 values('{}', '{}', '{}', {}, 'N', 'N', 'N', '{}', '无')".format(order_num, user_id, "", number, mail_num);
+    sql = "insert into 订单表 values('{}', '{}', '{}', {}, 'N', 'N', 'N', '{}', '无')".format(order_num, user_id, goods_num, number, mail_num);
     cursor.execute(sql)
 
     pass
