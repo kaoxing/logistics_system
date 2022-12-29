@@ -16,40 +16,43 @@
     </div>
     <br>
     <br>
-    <br>
-    <br>
+    <HR align=center width="80%" color=#987cb9SIZE=1>
+    <h2 style="text-align:center">账号信息修改</h2>
     <br>
     <br>
     <br>
     <div style="text-align:center">
         名字修改：<el-input type="text" placeholder="修改后的用户名" style="width: 270px" v-model="name"></el-input>
-    </div>
-    <br>
-    <br>
-    <div style="text-align:center">
         原始密码：<el-input type="password" placeholder="原密码" style="width: 270px" v-model="sourcePwd"></el-input>
+        修改密码：<el-input type="password" placeholder="修改后的密码" style="width: 270px" v-model="resultPwd"></el-input>
+        <el-button type="primary" @click="reSet1">确认修改</el-button>
     </div>
+    <br>
+    <br>
+    <HR align=center width="80%" color=#987cb9SIZE=1>
+    <h2 style="text-align:center">购买账号绑定</h2>
+    <br>
     <br>
     <br>
     <div style="text-align:center">
-        修改密码：<el-input type="password" placeholder="修改后的密码" style="width: 270px" v-model="resultPwd"></el-input>
-    </div>
-    <br>
-    <br><div style="text-align:center">
         购买账号：<el-input type="text" placeholder="购买账号" style="width: 270px" v-model="buyId"></el-input>
+        购买密码：<el-input type="password" placeholder="购买密码" style="width: 270px" v-model="buyPwd"></el-input>
+        <el-button type="primary" @click="reSet2">确认修改</el-button>
     </div>
     <br>
     <br>
-    <div style="text-align:center"><el-button type="primary" @click="reSet">确认修改</el-button></div>
+    <HR align=center width="80%" color=#987cb9SIZE=1>
 </div>
 
 <script>
     let load={
+        ope:"",
         id:"{{id}}",
         resultName:"",
         sourcePwd:"",
         resultPwd:"",
-        buyId:""
+        buyId:"",
+        buyPwd:"",
     }
     const local = "/";
     let setting=new Vue({
@@ -61,13 +64,14 @@
             sourcePwd:"",
             resultPwd:"",
             buyId:"{{buyId}}",
+            buyPwd:"",
         },
         methods: {
-            reSet: function () {
+            reSet1: function () {
+                load.ope='1';
                 load.resultName = this.name;
                 load.sourcePwd = this.sourcePwd;
                 load.resultPwd = this.resultPwd;
-                load.buyId = this.buyId;
                 if(load.resultPwd.length!=9 && load.resultPwd.length!=0 ){
                     alert("密码长度最长为9位");
                 }
@@ -90,6 +94,33 @@
                     }else{
                         url =local + "user_setting/" + "?id=" + '{{id}}' + "&name=" + data[1] + "&pwd=" + data[2];
                         alert("密码错误，修改失败")
+                        window.location.replace(url)
+                    }
+                });
+            },
+            reSet2: function () {
+                load.ope='2';
+                load.buyId = this.buyId;
+                load.buyPwd = this.buyPwd;
+                fetch('/user_setting/', {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(load)
+                }).then(function(response) {
+                        return response.json();
+                }).then(function(responseJson) {
+                    data = responseJson.data;
+                    console.log(data)
+                    if(data[0]){
+                        url =local + "user_setting/" + "?id=" + '{{id}}' + "&name=" + data[1] + "&pwd=" + data[2];
+                        alert("修改成功")
+                        window.location.replace(url)
+                    }else{
+                        url =local + "user_setting/" + "?id=" + '{{id}}' + "&name=" + data[1] + "&pwd=" + data[2];
+                        alert("密码错误，绑定失败")
                         window.location.replace(url)
                     }
                 });

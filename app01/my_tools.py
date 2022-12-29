@@ -178,6 +178,7 @@ def user_get_order(id):
             "驿站电话": row[11],
             "驿站经度": row[12],
             "驿站纬度": row[13],
+            "收件电话": row[14],
         }
         list.append(dic)
     return list
@@ -596,13 +597,12 @@ def manager_delete_mail(mail_num):
 # ok
 # manager_delete_mail('009')
 
-def insert_order(order_num, number, mail_num, user_id, goods_num):
+def insert_order(order_num, number, mail_num, user_id, goods_name):
     # todo 向订单表中插入一条新数据，订单号，数量，驿站编码，用户购买账户id
-
     cursor = connection.cursor()
-    sql = "insert into 订单表 values('{}', '{}', '{}', {}, 'N', 'N', 'N', '{}', '无')".format(order_num, user_id, "", number, mail_num);
+    sql = "insert into 订单表 values('{}', '{}', '{}', '{}', 'N', 'N', 'N', '{}', '无')"\
+        .format(order_num, user_id, goods_name, number, mail_num)
     cursor.execute(sql)
-
     pass
 
 
@@ -613,7 +613,9 @@ def get_mails():
     cursor.execute(sql)
     rows = cursor.fetchall()
     list = []
+    # print(rows)
     for row in rows:
-        list.append(row[0])
+        list.append([row[0].rstrip(), row[1].rstrip()])
     return list
-    pass
+
+

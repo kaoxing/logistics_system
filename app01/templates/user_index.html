@@ -50,6 +50,12 @@
         width="150">
       </el-table-column>
         <el-table-column
+        prop="收件电话"
+        label="收件电话"
+        width="150"
+        v-if="false">
+      </el-table-column>
+        <el-table-column
         prop="配送状态"
         label="配送状态"
         width="150">
@@ -113,6 +119,7 @@
         ope:"",
         id:"{{id}}",
         goods_num:"",
+        phone_num:"",
     };
     let evaTable=[]
     const local="http://localhost:8000/";

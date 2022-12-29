@@ -18,6 +18,7 @@ local = "http://127.0.0.1:8000/"
 # 约定好的外部接口密钥，此处是明文，传输时应当用coder.encoder()方法加密，加密的key也需要约定好，此处我用的是coderX
 # 如果其余组没有加密模块，或加密方式不同，明文传输也不是不行，反正也没人看
 portKey = "the_long_dark"
+order_url = "http://127.0.0.1:8000/"
 
 
 def port(request):
@@ -37,34 +38,47 @@ def port(request):
     ope = data.get("ope")
     key = data.get("portKey")
     load = data.get("load")
-    # print(data)
+    print(data)
     if portKey != coder.decode(key, "coderX"):
         # 若密钥错误
         return JsonResponse({"info": "错误的密钥!"})
-    if ope == "refund":
-        # 接收到客服系统传来的退货数据
-        order_num = data.get("order_num")
-        tls.manager_refund(load.get("order_num"))
-        return JsonResponse({"info": "成功接收"})
-    elif ope == "buyOrder":
-        # 接收到购买系统传来的订单数据
-        order_num = data.get("ONO")
-        number = data.get("ONUM")
-        mail_num = data.get("OADERSS")
-        user_id = data.get("UNO")
-        goods_num = data.get("CNO")
-        tls.insert_order(order_num, number, mail_num, user_id, goods_num)
-        return JsonResponse({"info": "成功接收"})
-    elif ope == "getMails":
-        # 请求所有驿站编号
-        pts.my_post(request.ur)
-
-    return JsonResponse({"info": "error"})
+    try:
+        if ope == "refund":
+            # 接收到客服系统传来的退货数据
+            order_num = data.get("order_num")
+            tls.manager_refund(load.get("order_num"))
+            return JsonResponse({"info": "成功接收"})
+        elif ope == "buyOrder":
+            # 接收到购买系统传来的订单数据
+            order_num = load.get("ONO")
+            number = load.get("ONUM")
+            mail_num = load.get("OADERSS")
+            user_id = load.get("UNO")
+            goods_name = load.get("CNAME")
+            # goods_phone = load.get("")
+            tls.insert_order(order_num, number, mail_num, user_id, goods_name)
+            return JsonResponse({"info": "成功接收"})
+        elif ope == "getMails":
+            # 请求所有驿站编号
+            mails_list = tls.get_mails()
+            ret_list = []
+            for mail in mails_list:
+                dic = {
+                    "value": mail[0],
+                    "label": mail[1],
+                }
+                ret_list.append(dic)
+            return JsonResponse({"mails_list": ret_list})
+        return JsonResponse({"info": "error"})
+    except Exception as e:
+        e.with_traceback()
+        return JsonResponse({"info": str(e)})
 
 
 # Create your views here.
 def home(request):
     """主页"""
+    print(tls.get_mails())
     return render(request, "home.html")
 
 
@@ -119,7 +133,7 @@ def manager_login(request):
     if name is not None:
         user_data[1] = coder.encode(pwd, id)
         user_data[3] = True
-    print(user_data)
+    # print(user_data)
     return JsonResponse({"data": user_data})
 
 
@@ -142,7 +156,7 @@ def poster_index(request):
     ret_list = []
     id = data.get("id")
     ret_list = tls.poster_get_order(id)
-    print(ret_list)
+    # print(ret_list)
     return JsonResponse({"data": ret_list})
 
 
@@ -194,7 +208,7 @@ def user_index(request):
         tls.user_receive(order_num)
         return JsonResponse({"data": "None"})
     ret_list = tls.user_get_order(id)
-    print(ret_list)
+    # print(ret_list)
     return JsonResponse({"data": ret_list})
 
 
@@ -217,16 +231,25 @@ def user_setting(request):
     sPwd = data.get('sourcePwd')
     rPwd = data.get('resultPwd')
     buyId = data.get("buyId")
-    tls.user_change_buyId(id, buyId)
-    ans = [tls.user_change_info(id, rName, sPwd, rPwd), rName]
-    pwd = tls.setting_get_user_pwd(id)
-    if ans[0]:
+    buyPwd = data.get("buyPwd")
+    ope = data.get("ope")
+    if ope == "1":
+        ans = [tls.user_change_info(id, rName, sPwd, rPwd), rName]
+        pwd = tls.setting_get_user_pwd(id)
         pwd = coder.encode(pwd, id)
         ans.append(pwd)
         return JsonResponse({"data": ans})
-    pwd = coder.encode(pwd, id)
-    ans.append(pwd)
-    return JsonResponse({"data": ans})
+    elif ope == "2":
+        load = {
+            "id": buyId,
+            "pwd": buyPwd,
+        }
+        ret = pts.my_post(order_url, ope="deliverCheck", load=load)
+        ret.json()
+        ans = [ret.get("data")]
+        if ans[0]:
+            tls.user_change_buyId(id, buyId)
+        return JsonResponse({"data": ans})
 
 
 def manager_distribute(request):
@@ -257,7 +280,7 @@ def manager_distribute(request):
     if ope == "退货":
         pass
         # tls.manager_refund(order_num)
-        # ret = pts.my_post("http://127.0.0.1:8000/port/", {"ope": "buyOrder"})
+        # ret = pts.my_post("http://127.0.0.1:8000/port/", ope="getMails")
         # ret = ret.json()
         # print(ret)
         # tls.manager_refund()

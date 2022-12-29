@@ -4,11 +4,11 @@ import requests
 import coder
 
 
-def my_post(url, load) -> requests.Response:
+def my_post(url, ope, load="") -> requests.Response:
     key = coder.encode("the_long_dark", "coderX")
     headers = {'content-Type': 'application/json', 'Accept': '*/*'}
     data = {
-        "ope": "buyOrder",
+        "ope": ope,
         "portKey": key,
         "load": load,
     }
