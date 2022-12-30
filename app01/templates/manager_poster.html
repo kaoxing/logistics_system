@@ -38,27 +38,37 @@
       <el-table-column
         prop="工号"
         label="工号"
-        width="300">
+        width="200">
       </el-table-column>
       <el-table-column
         prop="姓名"
         label="姓名"
-        width="300">
+        width="200">
       </el-table-column>
         <el-table-column
         prop="身份证号"
         label="身份证号"
-        width="300">
+        width="200">
       </el-table-column>
         <el-table-column
         prop="电话"
         label="电话"
-        width="300">
+        width="200">
       </el-table-column>
         <el-table-column
         prop="驿站编号"
         label="驿站编号"
-        width="300">
+        width="200">
+      </el-table-column>
+        <el-table-column
+        prop="账号"
+        label="账号"
+        width="200">
+      </el-table-column>
+        <el-table-column
+        prop="密码"
+        label="密码"
+        width="200">
       </el-table-column>
         <el-table-column label="操作" prop="action" align="center">
           <div  slot-scope="scope">
@@ -82,12 +92,25 @@
     <el-form-item label="身份证号">
     <el-input  maxlength="18" type="text" v-model="PId"></el-input>
   </el-form-item>
+    <el-form-item label="账号">
+    <el-input  maxlength="20" type="text" v-model="PCount"></el-input>
+  </el-form-item>
+    <el-form-item label="密码">
+    <el-input  maxlength="20" type="text" v-model="PPwd"></el-input>
+  </el-form-item>
     <el-form-item label="电话">
     <el-input  maxlength="20" type="text" v-model="PCall"></el-input>
   </el-form-item>
-    <el-form-item label="驿站编号">
-    <el-input  maxlength="10" type="text" v-model="PMail"></el-input>
-  </el-form-item>
+    <el-form-item label="驿站选择">
+        <el-select v-model="value" placeholder="地址" >
+            <el-option
+              v-for="item in mailsTable"
+              :key="item.value"
+              :label="item.value+':'+item.label"
+              :value="item.value">
+            </el-option>
+        </el-select>
+    </el-form-item>
 </el-form>
     <span slot="footer" class="dialog-footer">
         <el-button @click="closeDialog1">取 消</el-button>
@@ -97,6 +120,7 @@
 </div>
 <script>
     let table={{ List|safe }};
+    let mails={{ List1|safe }}
     let load={
         info:"",
         ope:"",
@@ -108,12 +132,15 @@
         PCall:"",
         PMail:"",
         PId:"",
+        PCount:"",
+        PPwd:"",
     };
     const local="/";
     let search=new Vue({
         el:"#app",
         data:{
             dataTable:table,
+            mailsTable:mails,
             dialogVisible: false,
             show1:true,
             dialogVisible1: false,
@@ -122,7 +149,10 @@
             PCall:"",
             PMail:"",
             PId:"",
-            Pdisable:""
+            PCount:"",
+            PPwd:"",
+            Pdisable:"",
+            value:"",
         },
         methods:{
             goMail:function (index,row){
@@ -136,7 +166,9 @@
                 this.PName = row.姓名;
                 this.PId = row.身份证号;
                 this.PCall = row.电话;
-                this.PMail = row.驿站编号;
+                this.PPwd = row.密码;
+                this.PCount = row.账号;
+                this.value = row.驿站编号;
                 this.Pdisable = true
             },
             closeDialog1:function(){
@@ -168,8 +200,11 @@
                 load.PNum = this.PNum;
                 load.PId = this.PId;
                 load.PCall = this.PCall;
-                load.PMail = this.PMail;
+                load.PMail = this.value;
                 load.PName = this.PName;
+                load.PCount = this.PCount;
+                load.PPwd = this.PPwd;
+                load.PMail = this.value;
                 fetch("/manager_poster/?name={{name}}&id={{id}}&pwd={{pwd}}", {
                     method: 'POST',
                     mode: 'cors',

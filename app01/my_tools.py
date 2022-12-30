@@ -294,9 +294,9 @@ def manager_get_poster():
     cursor = connection.cursor()
     sql = "select * from 跑腿人员信息表"
     cursor.execute(sql)
-    print(sql)
+    # print(sql)
     rows = cursor.fetchall()
-    print(rows)
+    # print(rows)
     list = []
     for row in rows:
         dic = {
@@ -304,7 +304,9 @@ def manager_get_poster():
             "姓名": row[1],
             "身份证号": row[2],
             "电话": row[3],
-            "驿站编号": row[4]
+            "驿站编号": row[4],
+            "账号": row[5],
+            "密码": row[6],
         }
         list.append(dic)
     return list
@@ -485,12 +487,13 @@ def manager_modify_poster(PNum, PName, PCardId, PCall, PMail, Pid, Ppsw):
     # todo 修改跑腿人员信息,参数为工号，名字，身份证号，电话，驿站,账号,密码
     # 工号不会被修改，用工号查找然后修改即可
     cursor = connection.cursor()
-    sql = "select * from 跑腿人员信息表 where 跑腿_工号='{}'".format(PNum)  # sql语句，此检验订单是否存在
+    sql = "select * from 跑腿人员信息表 where 跑腿_工号='{}'".format(PNum)
     cursor.execute(sql)  # 执行sql
     rows = cursor.fetchall()  # 获取执行结果rows
     if len(rows) != 0:
         sql = "update 跑腿人员信息表 set 跑腿_姓名='{}',跑腿_身份证号='{}',跑腿_电话='{}',跑腿_驿站编号='{}',跑腿_账号='{}'," \
               "跑腿_密码='{}' where 跑腿_工号='{}'".format(PName, PCardId, PCall, PMail, Pid, Ppsw, PNum)  # sql语句
+        print(sql)
         cursor.execute(sql)  # 执行sql
     return
 
@@ -600,7 +603,7 @@ def manager_delete_mail(mail_num):
 def insert_order(order_num, number, mail_num, user_id, goods_name):
     # todo 向订单表中插入一条新数据，订单号，数量，驿站编码，用户购买账户id
     cursor = connection.cursor()
-    sql = "insert into 订单表 values('{}', '{}', '{}', '{}', 'N', 'N', 'N', '{}', '无')"\
+    sql = "insert into 订单表 values('{}', '{}', '{}', '{}', 'N', 'N', 'N', '{}', '无')" \
         .format(order_num, user_id, goods_name, number, mail_num)
     cursor.execute(sql)
     pass
@@ -616,6 +619,12 @@ def get_mails():
     # print(rows)
     for row in rows:
         list.append([row[0].rstrip(), row[1].rstrip()])
-    return list
-
-
+    mails_list = list
+    ret_list = []
+    for mail in mails_list:
+        dic = {
+            "value": mail[0],
+            "label": mail[1],
+        }
+        ret_list.append(dic)
+    return ret_list

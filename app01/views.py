@@ -60,14 +60,7 @@ def port(request):
             return JsonResponse({"info": "成功接收"})
         elif ope == "getMails":
             # 请求所有驿站编号
-            mails_list = tls.get_mails()
-            ret_list = []
-            for mail in mails_list:
-                dic = {
-                    "value": mail[0],
-                    "label": mail[1],
-                }
-                ret_list.append(dic)
+            ret_list = tls.get_mails()
             return JsonResponse({"mails_list": ret_list})
         return JsonResponse({"info": "error"})
     except Exception as e:
@@ -301,8 +294,9 @@ def manager_poster(request):
         if id is None:
             return redirect(local + "manager_login/")
         poster_list = tls.manager_get_poster()
+        mails_list = tls.get_mails()
         return render(request, "manager_poster.html",
-                      {'name': name, 'id': id, 'pwd': pwd, 'List': json.dumps(poster_list)})
+                      {'name': name, 'id': id, 'pwd': pwd, 'List': json.dumps(poster_list), 'List1':json.dumps(mails_list)})
     # 接收到请求
     data = json.loads(request.body)
     id = data.get("id")
@@ -317,18 +311,22 @@ def manager_poster(request):
         tls.manager_delete_poster(poster_num)
     elif ope == "新增":
         PNum = data.get("PNum")
-        PId = data.get("PId")
+        PCardId = data.get("PId")
         PCall = data.get("PCall")
         PMail = data.get("PMail")
         PName = data.get("PName")
-        tls.manager_new_poster(PNum, PName, PId, PCall, PMail)
+        Ppsw = data.get("PPwd")
+        Pid = data.get("PCount")
+        tls.manager_new_poster(PNum, PName, PCardId, PCall, PMail, Pid, Ppsw)
     elif ope == "修改":
         PNum = data.get("PNum")
-        PId = data.get("PId")
+        PCardId = data.get("PId")
         PCall = data.get("PCall")
         PMail = data.get("PMail")
         PName = data.get("PName")
-        tls.manager_modify_poster(PNum, PName, PId, PCall, PMail)
+        Ppsw = data.get("PPwd")
+        Pid = data.get("PCount")
+        tls.manager_modify_poster(PNum, PName, PCardId, PCall, PMail, Pid, Ppsw)
     return JsonResponse({"data": None})
 
 
