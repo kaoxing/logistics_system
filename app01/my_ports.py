@@ -5,6 +5,7 @@ import coder
 
 
 def my_post(url, ope, load="") -> requests.Response:
+    """符合接口定义的标准post方法"""
     key = coder.encode("the_long_dark", "coderX")
     headers = {'content-Type': 'application/json', 'Accept': '*/*'}
     data = {
