@@ -38,7 +38,6 @@ def port(request):
     ope = data.get("ope")
     key = data.get("portKey")
     load = data.get("load")
-    print(data)
     if portKey != coder.decode(key, "coderX"):
         # 若密钥错误
         return JsonResponse({"info": "错误的密钥!"})
@@ -61,7 +60,11 @@ def port(request):
         elif ope == "getMails":
             # 请求所有驿站编号
             ret_list = tls.get_mails()
-            return JsonResponse({"mails_list": ret_list})
+            return JsonResponse({"mails_list": json.dumps(ret_list)})
+        elif ope == "getOrders":
+            # 请求获取物流信息
+            ret_list = tls.manager_get_distribute()
+            return JsonResponse({"data": json.dumps(ret_list)})
         return JsonResponse({"info": "error"})
     except Exception as e:
         e.with_traceback()
