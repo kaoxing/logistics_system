@@ -18,7 +18,7 @@ local = "http://127.0.0.1:8000/"
 # 约定好的外部接口密钥，此处是明文，传输时应当用coder.encoder()方法加密，加密的key也需要约定好，此处我用的是coderX
 # 如果其余组没有加密模块，或加密方式不同，明文传输也不是不行，反正也没人看
 portKey = "the_long_dark"
-order_url = "http://127.0.0.1:8000/"
+order_url = "http://120.46.185.111:8000/lxPort/"
 
 
 def port(request):
@@ -54,8 +54,8 @@ def port(request):
             mail_num = load.get("OADERSS")
             user_id = load.get("UNO")
             goods_name = load.get("CNAME")
-            # goods_phone = load.get("")
-            tls.insert_order(order_num, number, mail_num, user_id, goods_name)
+            goods_phone = load.get("UTELEPHON")
+            tls.insert_order(order_num, number, mail_num, user_id, goods_name, goods_phone)
             return JsonResponse({"info": "成功接收"})
         elif ope == "getMails":
             # 请求所有驿站编号
@@ -241,8 +241,9 @@ def user_setting(request):
             "pwd": buyPwd,
         }
         ret = pts.my_post(order_url, ope="deliverCheck", load=load)
-        ret.json()
-        ans = [ret.get("data")]
+        ret = ret.json()
+        # print(ret)
+        ans = [ret.get("data"), rName, sPwd]
         if ans[0]:
             tls.user_change_buyId(id, buyId)
         return JsonResponse({"data": ans})
@@ -281,6 +282,7 @@ def manager_distribute(request):
         # print(ret)
         # tls.manager_refund()
     elif ope == "分配":
+        print(ope)
         tls.manager_distribute()
     elif ope == "修改":
         tls.manager_modify_distribute(order_num, poster_num)
@@ -299,7 +301,8 @@ def manager_poster(request):
         poster_list = tls.manager_get_poster()
         mails_list = tls.get_mails()
         return render(request, "manager_poster.html",
-                      {'name': name, 'id': id, 'pwd': pwd, 'List': json.dumps(poster_list), 'List1':json.dumps(mails_list)})
+                      {'name': name, 'id': id, 'pwd': pwd, 'List': json.dumps(poster_list),
+                       'List1': json.dumps(mails_list)})
     # 接收到请求
     data = json.loads(request.body)
     id = data.get("id")

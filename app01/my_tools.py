@@ -318,7 +318,7 @@ def manager_get_poster():
 
 def manager_get_distribute():
     cursor = connection.cursor()
-    sql = "select * from user_view"
+    sql = "select * from new_user_view"
     cursor.execute(sql)
     # print(sql)
     rows = cursor.fetchall()
@@ -327,19 +327,18 @@ def manager_get_distribute():
     for row in rows:
         dic = {
             "订单编号": row[0],
-            "用户账号": row[1],
-            '物品名称': row[3],
-            "物品数量": row[4],
-            '是否退货': row[5],
-            "是否签收": row[6],
-            "配送状态": row[7],
-            "负责跑腿人员": row[8],
-            "跑腿人员电话": row[9],
-            "驿站编号": row[10],
-            "驿站电话": row[11],
-            "驿站经度": row[12],
-            "驿站纬度": row[13],
-            "是否分配": row[14],
+            "购买账号": row[1],
+            '物品名称': row[2],
+            "物品数量": row[3],
+            '是否退货': row[4],
+            "是否签收": row[5],
+            "配送状态": row[6],
+            "负责跑腿人员": row[7],
+            "跑腿人员电话": row[8],
+            "驿站编号": row[9],
+            "驿站电话": row[10],
+            "驿站经度": row[11],
+            "驿站纬度": row[12],
         }
         list.append(dic)
     return list
@@ -454,7 +453,7 @@ def manager_distribute():
     cursor.execute(sql)
     rows = cursor.fetchall()
 
-    print(len(rows))
+    # print(len(rows))
 
     for row in rows:
         lists[int(row[4])].append(row[0])
@@ -462,19 +461,21 @@ def manager_distribute():
 
     sql = "select * from 订单表 where 订单_是否分配 = 'N'"
     cursor.execute(sql)
+    # print(sql)
     rows = cursor.fetchall()
-
+    # print(rows)
     for row in rows:
         station = int(row[7])
         sql = "insert into 配送表 values('{}', '{}', '{}')".format(row[0], lists[station][cur[station]], "N")
         cursor.execute(sql)
-        print(station)
-        print(sql)
+        # print(station)
+        # print(sql)
         cur[station] += 1
         if cur[station] == num[station]:
-            cur[station] = 0;
+            cur[station] = 0
 
     sql = "update 订单表 set 订单_是否分配 = 'Y'"
+    # print(sql)
     cursor.execute(sql)
 
     return
@@ -600,11 +601,11 @@ def manager_delete_mail(mail_num):
 # ok
 # manager_delete_mail('009')
 
-def insert_order(order_num, number, mail_num, user_id, goods_name):
+def insert_order(order_num, number, mail_num, user_id, goods_name, goods_phone):
     # todo 向订单表中插入一条新数据，订单号，数量，驿站编码，用户购买账户id
     cursor = connection.cursor()
-    sql = "insert into 订单表 values('{}', '{}', '{}', '{}', 'N', 'N', 'N', '{}', '无')" \
-        .format(order_num, user_id, goods_name, number, mail_num)
+    sql = "insert into 订单表 values('{}', '{}', '{}', '{}', 'N', 'N', 'N', '{}', '{}')" \
+        .format(order_num, user_id, goods_name, number, mail_num, goods_phone)
     cursor.execute(sql)
     pass
 

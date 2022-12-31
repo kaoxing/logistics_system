@@ -100,6 +100,8 @@
             },
             reSet2: function () {
                 load.ope='2';
+                load.rName = this.name;
+                load.sourcePwd = this.pwd;
                 load.buyId = this.buyId;
                 load.buyPwd = this.buyPwd;
                 fetch('/user_setting/', {
